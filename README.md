@@ -1,86 +1,82 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Cloud Controller API v3 Styleguide (Proposal)](#cloud-controller-api-v3-styleguide-proposal)
-  - [Table of contents](#table-of-contents)
-  - [Overview](#overview)
-    - [API Technologies](#api-technologies)
-    - [API Design Inspirations](#api-design-inspirations)
-  - [Requests](#requests)
-    - [URL structure](#url-structure)
-    - [GET](#get)
-      - [Examples](#examples)
-        - [Responses](#responses)
-        - [Responses](#responses-1)
-    - [POST](#post)
-      - [Examples](#examples-1)
-        - [Responses](#responses-2)
-    - [PUT](#put)
-      - [Examples](#examples-2)
-        - [Responses](#responses-3)
-    - [PATCH](#patch)
-      - [Examples](#examples-3)
-        - [Responses](#responses-4)
-    - [DELETE](#delete)
-      - [Examples](#examples-4)
-        - [Responses](#responses-5)
-  - [Resources <a name="resources"></a>](#resources-a-nameresourcesa)
-    - [Example](#example)
-  - [Links <a name="links"></a>](#links-a-namelinksa)
-    - [Example](#example-1)
-  - [Collections <a name="collections"></a>](#collections-a-namecollectionsa)
-    - [Example](#example-2)
-  - [Pagination <a name="pagination"></a>](#pagination-a-namepaginationa)
-    - [Example](#example-3)
-  - [Actions <a name="actions"></a>](#actions-a-nameactionsa)
-    - [Example](#example-4)
-  - [Query Parameters <a id="params"></a>](#query-parameters-a-idparamsa)
-      - [Examples:](#examples)
-  - [Filtering](#filtering)
-      - [Example multiple value request](#example-multiple-value-request)
-      - [Example single value request](#example-single-value-request)
-      - [Example combined filters](#example-combined-filters)
-  - [Errors](#errors)
-    - [Status Codes](#status-codes)
-    - [Issues with v2 error format](#issues-with-v2-error-format)
-    - [Proposal A](#proposal-a)
-    - [Proposal B](#proposal-b)
-    - [Proposal C](#proposal-c)
-  - [Response Codes <a name="responsecodes"></a>](#response-codes-a-nameresponsecodesa)
-    - [Successful Requests](#successful-requests)
-    - [Redirection](#redirection)
-    - [Client Errors](#client-errors)
-    - [Server Errors](#server-errors)
-  - [Relationships](#relationships)
-    - [Currently](#currently)
-    - [Proposal A](#proposal-a-1)
-    - [Proposal A1:](#proposal-a1)
-  - [Nested Resources](#nested-resources)
-  - [Including Related Resources](#including-related-resources)
-    - [Proposal A](#proposal-a-2)
-    - [Proposal B](#proposal-b-1)
-    - [Proposal C](#proposal-c-1)
-  - [Requesting Partial Resources](#requesting-partial-resources)
-    - [Proposal For Sub-Resources](#proposal-for-sub-resources)
-  - [Asynchronicity <a name="async"></a>](#asynchronicity-a-nameasynca)
-    - [Currently](#currently-1)
-      - [Grievances:](#grievances)
-    - [Proposal](#proposal)
-    - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
-  - [Style Guide Ideas (Style Guide Style Guide)](#style-guide-ideas-style-guide-style-guide)
-    - [Interesting Ideas](#interesting-ideas)
-    - [Questions](#questions)
-    - [Areas of Contention](#areas-of-contention)
-    - [Known SG Defects](#known-sg-defects)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 #Cloud Controller API v3 Styleguide (Proposal)
 
 ## Table of contents
-[TOC]
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Overview](#overview)
+  - [API Technologies](#api-technologies)
+  - [API Design Inspirations](#api-design-inspirations)
+- [Requests](#requests)
+  - [URL structure](#url-structure)
+  - [GET](#get)
+    - [Examples](#examples)
+      - [Responses (Resource)](#responses-resource)
+      - [Responses (Collection)](#responses-collection)
+  - [POST](#post)
+    - [Examples](#examples-1)
+      - [Responses](#responses)
+  - [PUT](#put)
+    - [Examples](#examples-2)
+      - [Responses](#responses-1)
+  - [PATCH](#patch)
+    - [Examples](#examples-3)
+      - [Responses](#responses-2)
+  - [DELETE](#delete)
+    - [Examples](#examples-4)
+      - [Responses](#responses-3)
+- [Resources <a name="resources"></a>](#resources-a-nameresourcesa)
+  - [Example](#example)
+- [Links <a name="links"></a>](#links-a-namelinksa)
+  - [Example](#example-1)
+- [Collections <a name="collections"></a>](#collections-a-namecollectionsa)
+  - [Example](#example-2)
+- [Pagination <a name="pagination"></a>](#pagination-a-namepaginationa)
+  - [Example](#example-3)
+- [Actions <a name="actions"></a>](#actions-a-nameactionsa)
+  - [Example](#example-4)
+- [Query Parameters <a id="params"></a>](#query-parameters-a-idparamsa)
+    - [Examples:](#examples)
+- [Filtering](#filtering)
+    - [Example multiple value request](#example-multiple-value-request)
+    - [Example single value request](#example-single-value-request)
+    - [Example combined filters](#example-combined-filters)
+- [Errors](#errors)
+  - [Status Codes](#status-codes)
+  - [Issues with v2 error format](#issues-with-v2-error-format)
+  - [Proposal A](#proposal-a)
+  - [Proposal B](#proposal-b)
+  - [Proposal C](#proposal-c)
+- [Response Codes <a name="responsecodes"></a>](#response-codes-a-nameresponsecodesa)
+  - [Successful Requests](#successful-requests)
+  - [Redirection](#redirection)
+  - [Client Errors](#client-errors)
+  - [Server Errors](#server-errors)
+- [Relationships](#relationships)
+  - [Currently](#currently)
+  - [Proposal A](#proposal-a-1)
+  - [Proposal A1](#proposal-a1)
+- [Nested Resources](#nested-resources)
+- [Including Related Resources](#including-related-resources)
+  - [Proposal A](#proposal-a-2)
+  - [Proposal B](#proposal-b-1)
+  - [Proposal C](#proposal-c-1)
+- [Requesting Partial Resources](#requesting-partial-resources)
+  - [Proposal For Sub-Resources](#proposal-for-sub-resources)
+- [Asynchronicity <a name="async"></a>](#asynchronicity-a-nameasynca)
+  - [Currently](#currently-1)
+    - [Grievances](#grievances)
+  - [Proposal](#proposal)
+  - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
+- [Style Guide Ideas (Style Guide Style Guide)](#style-guide-ideas-style-guide-style-guide)
+  - [Interesting Ideas](#interesting-ideas)
+  - [Questions](#questions)
+  - [Areas of Contention](#areas-of-contention)
+  - [Known SG Defects](#known-sg-defects)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
 This document serves as a styleguide for the Cloud Controller API. It is intended to act as a repository for patterns and best practices when designing and developing new API endpoints.
 
@@ -95,25 +91,25 @@ This document serves as a styleguide for the Cloud Controller API. It is intende
 
 List of terms:
 
- - Resource 
+ - Resource
  - Collection: List of resources
  - REST actions:
 	 - Create
 	 - Show
-	 - List 
+	 - List
 	 - Update
 	 - Delete
 
-## Requests 
+## Requests
 
 ### URL structure
 
-All endpoints shall be prefixed with an api version 
+All endpoints shall be prefixed with an api version
 Pattern: ` /v<number>/...`
 Example: `/v3/...`
 
 Collections of resources are referenced by their resource name (plural)
-Pattern: `/v3/<resource name>` 
+Pattern: `/v3/<resource name>`
 Example: `/v3/apps`
 
 Individual resources are referenced their resource name (plural) followed by the guid
@@ -126,36 +122,36 @@ Used to retrieve a single resource or a list of resources.
 * GET requests **may** include query parameters
 * GET requests **shall NOT** include a request body
 
-#### Examples 
+#### Examples
 Show individual resource:
 ```
 GET /v3/resource/:guid
 ```
 
-##### Responses
+##### Responses (Resource)
 |Scenario|Code|Body|
 |-|-|-|
 | Authorized User | 200 | Resource |
 | Unauthorized User | 404 | Error |
 
-List collection of resources: 
+List collection of resources:
 ```
 GET /v3/resource/:guid
 ```
-##### Responses
+##### Responses (Collection)
 |Scenario|Code|Body|
 |-|-|-|
 | User With Complete Visibility | 200 | List of All Resources |
 | User With Partial Visibility | 200 | List of Visible Resources |
 | User With No Visibility | 200 | Empty List |
 
-### POST 
+### POST
 Used to create a resource or trigger an action on a resource.
 
 * POST requests **shall NOT** include query parameters
 * POST requests **may** include a request body
 
-#### Examples 
+#### Examples
 
 Create a resource:
 
@@ -182,7 +178,7 @@ Used to request that an action is performed.  Sometimes PATCH will update a reso
 * PUT requests **shall NOT** include query parameters
 * PUT requests **may** include a request body
 
-#### Examples 
+#### Examples
 Update a resource:
 
 ```
@@ -208,7 +204,7 @@ Used to update a portion of a resource.
 * PATCH requests **shall NOT** include query parameters
 * PATCH requests **may** include a request body
 
-#### Examples 
+#### Examples
 Partially update a resource:
 
 ```
@@ -227,13 +223,13 @@ PATCH /v3/resource/:guid
 | Read-only User | 403 | Error |
 | Unauthorized User | 404 | Error |
 
-### DELETE 
+### DELETE
 Used to delete a resource.
 
 * DELETE requests **may ** include query parameters
 * DELETE requests **shall NOT** include a request body
 
-#### Examples 
+#### Examples
 Delete a resource:
 
 ```
@@ -264,7 +260,7 @@ A resource **may** contain additional fields which are the attributes describing
 A resource **should** contain a `_links:` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
 
 A resource **should** include a `self:` link object in the `_links:` field.
-  
+
 ### Example
 
 ```json
@@ -275,7 +271,7 @@ A resource **should** include a `self:` link object in the `_links:` field.
 
   "name": "resource1",
   "description": "an example resource",
-  
+
   "_links": {
     "self": {
       "href": "/v3/resources/a-b-c"
@@ -289,7 +285,7 @@ A resource **should** include a `self:` link object in the `_links:` field.
 Links provide URLs to relationships and actions for a resource.  Links are represented as a JSON object.
 
 Each member of a links object is a "link".  
-A link **MUST** be a JSON object. 
+A link **MUST** be a JSON object.
 A link **MUST** contain a `href:` field, which is a string containing the link's relative URL.
 A link **may** contain a `method:` field, which is a string containing the HTTP verb that must be used to follow the URL.
 
@@ -331,7 +327,7 @@ A collection **should** contain a `pagination:` field containing a [pagination](
       "guid": "a-b-c",
       "created_at": "2015-07-06T23:22:56Z",
       "updated_at": "2015-07-08T23:22:56Z",
-    
+
       "_links": {
         "self": {
           "href": "/v3/resources/a-b-c"
@@ -342,13 +338,13 @@ A collection **should** contain a `pagination:` field containing a [pagination](
       "guid": "d-e-f",
       "created_at": "2015-07-06T23:22:56Z",
       "updated_at": "2015-07-08T23:22:56Z",
-      
+
       "_links": {
         "self": {
           "href": "/v3/resources/d-e-f"
         }
       }
-    }    
+    }
   ],
   "pagination": {
     "total_results": 2,
@@ -625,7 +621,7 @@ This currently feels a little clunky for several reasons:
 
 Add a relationship object to resources similar to the jsonapi spec.
 
-Creating an app could change to allow creating relationships at create time by including the relationships object.  Some relationships could be required at creation such as space in the app case. 
+Creating an app could change to allow creating relationships at create time by including the relationships object.  Some relationships could be required at creation such as space in the app case.
 
 ```
 POST /v3/apps
@@ -638,13 +634,13 @@ POST /v3/apps
      {"guid": "3456"}
    ],
   },
-  _links {...}
+  "_links": {...}
 }
 ```
 
 Modifying relationships later could be done through a nested relationship resource
 
-Setting a *-to-one relationship:
+Setting a \*-to-one relationship:
 ```
 PATCH /v3/apps/guid/relationships/space
 {
@@ -652,7 +648,7 @@ PATCH /v3/apps/guid/relationships/space
 }
 ```
 
-Clearing a *-to-one relationship:
+Clearing a \*-to-one relationship:
 ```
 PATCH /v3/apps/guid/relationships/space
 {
@@ -660,7 +656,7 @@ PATCH /v3/apps/guid/relationships/space
 }
 ```
 
-Adding to a *-to-many relationship (not an overwrite/replace):
+Adding to a \*-to-many relationship (not an overwrite/replace):
 ```
 POST /v3/apps/guid/relationships/routes
 {
@@ -668,7 +664,7 @@ POST /v3/apps/guid/relationships/routes
 }
 ```
 
-Replacing all items in a *-to-many relationship:
+Replacing all items in a \*-to-many relationship:
 ```
 PATCH /v3/apps/guid/relationships/routes
 {
@@ -676,7 +672,7 @@ PATCH /v3/apps/guid/relationships/routes
 }
 ```
 
-Clearing all items in a *-to-many relationship:
+Clearing all items in a \*-to-many relationship:
 ```
 PATCH /v3/apps/guid/relationships/routes
 {
@@ -684,7 +680,7 @@ PATCH /v3/apps/guid/relationships/routes
 }
 ```
 
-Removing some items from a *-to-many relationship:
+Removing some items from a \*-to-many relationship:
 ```
 DELETE /v3/apps/guid/relationships/routes
 {
@@ -692,7 +688,7 @@ DELETE /v3/apps/guid/relationships/routes
 }
 ```
 
-### Proposal A1:
+### Proposal A1
 
 Include the previous proposal, but include relationships on the root resource GET and allow updating relationships from the root resource.
 
@@ -707,7 +703,7 @@ Response body for GET /v3/apps/:guid
      {"guid": "3456"}
    ],
   },
-  _links {...}
+  "_links": {...}
 }
 ```
 
@@ -725,7 +721,7 @@ Request body for PATCH /v3/apps/:guid
 ```
 In this example, `space` is a to-one relationship and `routes` is a to-many relationship.  The result is that space is changed and all routes are replaced with the values in the request. Therefore, to do a partial update of to-many resources, one would have to use the nested relationships routes listed in Proposal A.
 
-An interesting side-effect of returning the relationships object on the resource body is that relationships and _links have some amount of overlap.
+An interesting side-effect of returning the relationships object on the resource body is that relationships and \_links have some amount of overlap.
 
 ## Nested Resources
 
@@ -733,7 +729,7 @@ Nested resources can optionally be accessed through their parent resource.
 ```
 GET /v3/parent_resources/<parent_guid>/nested_resources
 ```
-This will be equivalent to 
+This will be equivalent to
 ```
 GET /v3/nested_resources?parent_guid=<parent_guid>
 ```
@@ -757,17 +753,17 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
 {
   "guid": "xyz",
   "resource_field": "value",
-  
+
   "subresource": {
     "guid": "abc",
     "subresource_field": "other value"
   },
-  
+
   "other_resources": [
     {
       "guid": "def",
       "other_resource_field": "Zach",
-  
+
       "subresource": {
         "guid": "abc",
         "subresource_field": "other value"
@@ -776,7 +772,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
     {
       "guid": "ght",
       "other_resource_field": "Dances",
-  
+
       "subresource": {
         "guid": "abc",
         "subresource_field": "other value"
@@ -787,7 +783,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
 ```
 
 Questions:
-1. Do the sub resources include _links and all that jazz?
+1. Do the sub resources include \_links and all that jazz?
 
 ### Proposal B
 
@@ -799,7 +795,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
 {
   "guid": "xyz",
   "resource_field": "value",
-  
+
   "included": {
     "subresource": {
       "guid": "abc",
@@ -809,7 +805,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
       {
         "guid": "def",
         "other_resource_field": "Zach",
-        
+
         "included": {
           "subresource": {
             "guid": "abc",
@@ -820,7 +816,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
       {
         "guid": "ght",
         "other_resource_field": "Dances",
-        
+
         "included": {
           "subresource": {
             "guid": "abc",
@@ -845,7 +841,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
 {
   "guid": "xyz",
   "resource_field": "value",
-  
+
   "included": {
     "subresources": [
       {
@@ -853,7 +849,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
         "subresource_field": "other value"
       }
     ],
-    "other_resources": [   
+    "other_resources": [
       {
       ( this resource also wanted the same subresource as above, but it was included once so we do not add it again)
         "guid": "def",  
@@ -911,9 +907,9 @@ The team later learned that not all endpoints need to be async (/v2/info for exa
 * By default, `async=true` causes the CLI to block and poll indefinitely waiting for job to complete (CC has to enforce a timeout)
 * By default, `accepts_incomplete=true` causes the CLI to exit once a poll-able resource is returned, and CC will poll for up to a week. CC ignores `async=true`
 
-Requests including the `async=true` query parameter will resolve asynchronously. Instead of returning whatever resource is requested, the CC will return a job. 
+Requests including the `async=true` query parameter will resolve asynchronously. Instead of returning whatever resource is requested, the CC will return a job.
 
-#### Grievances: 
+#### Grievances
  * The CC returns a resource different than what is requested
  * Not all endpoints support `async=true`. There doesn't seem to be any indication of what supports it.
  * It doesn't play nice with `accepts_incomplete=true` (service-specific). The CC will currently ignore `async=true` if `accepts_incomplete` is included, even if the broker does not support async operations. This renders `async=true` useless for most broker operations.
@@ -923,10 +919,9 @@ Requests including the `async=true` query parameter will resolve asynchronously.
 * `async=true` should only be available for resource operations that might take > 60 seconds (this might be impossible to determine).
 * the hope is what endpoints are async should be intuitive to the user
 
-To do a resource operation out of band, send the `async=true` flag. 
-```
-POST /v3/resource?async=true
-```
+To do a resource operation out of band, send the `async=true` flag.
+`POST /v3/resource?async=true`
+
 The CC will return a 202 with a location header pointing to the job.
 ```
 202 Accepted
@@ -934,7 +929,7 @@ Location: /v3/jobs/123
 
 {}
 ```
----
+
 Before the job has completed,  GET requests made to the job endpoint will return 200 with information about the status of the job.
 ```
 GET /v3/jobs/123
@@ -946,7 +941,7 @@ GET /v3/jobs/123
   "status": "in progress"
 }
 ```
----
+
 When the job has completed, GET request made to the job endpoint will return 303 and a location header to the resource (assuming it still exists).
 ```
 GET /v3/jobs/123
@@ -979,9 +974,9 @@ Another idea: We can assume that everyone using the v3 api accepts incomplete an
 ### Interesting Ideas
 * Instead of `guid` everywhere, use `id`
 * `accepts_incomplete` is a funky name
-* `relationships` and other top level not-fields should be prefixed with '_'  in the manner of `_links`
+* `relationships` and other top level not-fields should be prefixed with '\_'  in the manner of `_links`
 * We should probably have a unified example somewhere that includes everything
-* Should we distinguish between `PUT` and `PATCH`? Which should we use in the docs? 
+* Should we distinguish between `PUT` and `PATCH`? Which should we use in the docs?
 
 ### Questions
 * Do we need to include response information about both `async` and `accepts_incomplete`
