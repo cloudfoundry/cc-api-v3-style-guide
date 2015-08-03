@@ -977,10 +977,13 @@ Another idea: We can assume that everyone using the v3 api accepts incomplete an
 * `relationships` and other top level not-fields should be prefixed with '\_'  in the manner of `_links`
 * We should probably have a unified example somewhere that includes everything
 * Should we distinguish between `PUT` and `PATCH`? Which should we use in the docs?
+* We should consider adding justifications for things like `_links` and `relationships` that express the expected use cases for API consumers.
 
 ### Questions
 * Do we need to include response information about both `async` and `accepts_incomplete`
 * Are the `_links` and `relationships` sections compatible? There may be duplicate/ conflicting information. Maybe these sections should be closer together.
+* How should we behave when service brokers misbehave? 502? 50X?
+* How should we handle resources with many links (instances)?
 
 ### Areas of Contention
 * Greg thinks that actions should be POSTS instead of PUTS. http://restful-api-design.readthedocs.org/en/latest/methods.html#actions
