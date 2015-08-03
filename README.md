@@ -67,8 +67,6 @@
     - [Currently](#currently-1)
       - [Grievances:](#grievances)
     - [Proposal](#proposal)
-  - [```](#)
-  - [```](#-1)
     - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
   - [Style Guide Ideas (Style Guide Style Guide)](#style-guide-ideas-style-guide-style-guide)
     - [Interesting Ideas](#interesting-ideas)
