@@ -130,7 +130,7 @@ GET /v3/resource/:guid
 
 ##### Responses (Resource)
 |Scenario|Code|Body|
-|-|-|-|
+|---|---|---|
 | Authorized User | 200 | Resource |
 | Unauthorized User | 404 | Error |
 
@@ -140,7 +140,7 @@ GET /v3/resource/:guid
 ```
 ##### Responses (Collection)
 |Scenario|Code|Body|
-|-|-|-|
+|---|---|---|
 | User With Complete Visibility | 200 | List of All Resources |
 | User With Partial Visibility | 200 | List of Visible Resources |
 | User With No Visibility | 200 | Empty List |
@@ -166,7 +166,7 @@ POST /v3/resource/:guid
 
 ##### Responses
 |Scenario|Code(s)|Body|
-|-|-|-|
+|---|---|---|
 | Authorized User (sync) | 201 | Created Resource |
 | Authorized User (async) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
@@ -192,7 +192,7 @@ PUT /v3/resource/:guid
 
 ##### Responses
 |Scenario|Code(s)|Body|
-|-|-|-|
+|---|---|---|
 | Authorized User (sync) | 201 | Updated Resource |
 | Authorized User (async) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
@@ -217,7 +217,7 @@ PATCH /v3/resource/:guid
 
 ##### Responses
 |Scenario|Code(s)|Body|
-|-|-|-|
+|---|---|---|
 | Authorized User (sync) | 201 | Updated Resource |
 | Authorized User (async) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
@@ -238,7 +238,7 @@ DELETE /v3/resource/:guid
 
 ##### Responses
 |Scenario|Code(s)|Body|
-|-|-|-|
+|---|---|---|
 | Authorized User (sync) | 204 | N/A |
 | Authorized User (async) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
@@ -571,7 +571,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 ### Successful Requests
 
 |Status Code|Description|Verbs|
-|-|-|-|
+|---|---|---|
 |200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This should only be used if there is not a more appropriate 2XX response code. |GET, PATCH, PUT|
 |201 Created|This status **MUST** be returned for synchronous requests that result in the creation of a new resource.|POST|
 |202 Accepted|This status **MUST** be returned for requests that have been successfully accepted and will be asynchronously completed at a later time.|POST,PATCH,PUT,DELETE|
@@ -581,14 +581,14 @@ This proposal includes `code` which would be an internal unique identifier of a 
 ### Redirection
 
 |Status Code|Description|Verbs|
-|-|-|-|
+|---|---|---|
 |303 See Other| This status **MUST** be returned when an async job finishes. It should include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET, PATCH, PUT|
 
 
 ### Client Errors
 
 |Status Code|Description|Verbs|
-|-|-|-|
+|---|---|---|
 |400 Bad Request|This status **MUST** be returned for requests that provide malformed or invalid data. Examples: invalid JSON, unexpected query parameters or request fields.|GET, PATCH, POST, PUT, DELETE|
 |401 Unauthenticated|This status **MUST** be returned if the requested resource requires an authenticated user but there is no OAuth token provided, or the OAuth token provided is invalid.|GET, POST, PATCH, DELETE, PUT|
 |403 Forbidden|This status **MUST** be returned if the request cannot be performed by the user due to lack of permissions. Example: User with read-only permissions to a resource tries to update it. |POST, PATCH, DELETE, PUT|
@@ -598,7 +598,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 ### Server Errors
 
 |Status Code|Description
-|-|-|-|
+|---|---|---|
 |500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
 |502 Bad Gateway|This status **should** be returned when an upstream service failure causes a request to fail.
 
@@ -960,7 +960,7 @@ Note that for asynchronous deletes, the redirect location will be to a no-longer
 Currently the CC will ignore the `async` flag if `accepts_incomplete` is included. This does not have to be the case for v3.
 
 |async|accepts_incomplete|Broker response|Result|
-|-|-|-|-|
+|---|---|---|---|
 |true|true|synchronous|202 with job -> 303 to 'succeeded' instance|
 |true|true|asynchronous|202 with job -> 303 to 'in progress' instance|
 |false|true|synchronous|201 with 'succeeded' instance
