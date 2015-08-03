@@ -27,17 +27,17 @@
   - [DELETE](#delete)
     - [Examples](#examples-4)
       - [Responses](#responses-3)
-- [Resources <a name="resources"></a>](#resources-a-nameresourcesa)
+- [Resources](#resources)
   - [Example](#example)
-- [Links <a name="links"></a>](#links-a-namelinksa)
+- [Links](#links)
   - [Example](#example-1)
-- [Collections <a name="collections"></a>](#collections-a-namecollectionsa)
+- [Collections](#collections)
   - [Example](#example-2)
-- [Pagination <a name="pagination"></a>](#pagination-a-namepaginationa)
+- [Pagination](#pagination)
   - [Example](#example-3)
-- [Actions <a name="actions"></a>](#actions-a-nameactionsa)
+- [Actions](#actions)
   - [Example](#example-4)
-- [Query Parameters <a id="params"></a>](#query-parameters-a-idparamsa)
+- [Query Parameters](#query-parameters)
     - [Examples:](#examples)
 - [Filtering](#filtering)
     - [Example multiple value request](#example-multiple-value-request)
@@ -49,7 +49,7 @@
   - [Proposal A](#proposal-a)
   - [Proposal B](#proposal-b)
   - [Proposal C](#proposal-c)
-- [Response Codes <a name="responsecodes"></a>](#response-codes-a-nameresponsecodesa)
+- [Response Codes](#response-codes)
   - [Successful Requests](#successful-requests)
   - [Redirection](#redirection)
   - [Client Errors](#client-errors)
@@ -65,7 +65,7 @@
   - [Proposal C](#proposal-c-1)
 - [Requesting Partial Resources](#requesting-partial-resources)
   - [Proposal For Sub-Resources](#proposal-for-sub-resources)
-- [Asynchronicity <a name="async"></a>](#asynchronicity-a-nameasynca)
+- [Asynchronicity](#asynchronicity)
   - [Currently](#currently-1)
     - [Grievances](#grievances)
   - [Proposal](#proposal)
@@ -226,7 +226,7 @@ PATCH /v3/resource/:guid
 ### DELETE
 Used to delete a resource.
 
-* DELETE requests **may ** include query parameters
+* DELETE requests **may** include query parameters
 * DELETE requests **shall NOT** include a request body
 
 #### Examples
@@ -245,7 +245,7 @@ DELETE /v3/resource/:guid
 | Unauthorized User | 404 | Error |
 | Missing Resource | 404 | Error |
 
-## Resources <a name="resources"></a>
+## Resources
 
 A resource represents an individual object within the system, such as an app or a service.  It is represented as a JSON object.  
 
@@ -280,7 +280,7 @@ A resource **should** include a `self:` link object in the `_links:` field.
 }
 ```
 
-## Links <a name="links"></a>
+## Links
 
 Links provide URLs to relationships and actions for a resource.  Links are represented as a JSON object.
 
@@ -311,7 +311,7 @@ A link **may** contain a `method:` field, which is a string containing the HTTP 
 
 Note that the key is `_links` to reduce the likelihood of collisions with a hypothetical resource field named `links`.
 
-## Collections <a name="collections"></a>
+## Collections
 A collection is a list of multiple Resources.  A collection is represented as a JSON object.
 
 A collection **MUST** contain a `resources:` field.  The resources field is an array containing multiple [Resources](#resources).
@@ -360,7 +360,7 @@ A collection **should** contain a `pagination:` field containing a [pagination](
 }
 ```
 
-## Pagination <a name="pagination"></a>
+## Pagination
 
 Pagination **may** be used by [Collections](#collections) to limit the number of resources returned at a time.  Pagination is requested by a client through the use of query parameters. Pagination is represented as a JSON object.
 
@@ -388,7 +388,7 @@ The following query parameters **should** be used for pagination:
 * `order_by:` a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by
 * `order_direction:` the direction to returned the ordered collection in;  valid values **should** be `asc` or `desc`
 
-If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#params) names.
+If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
 ### Example
 
@@ -408,7 +408,7 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 }
 ```
 
-## Actions <a name="actions"></a>
+## Actions
 
 Actions are API requests that are expected to initiate change within the Cloud Foundry runtime.  This is differentiated from requests which update a record, but require additional updates -- such as restarting an app -- to cause changes to a resource to take affect.  
 
@@ -421,7 +421,7 @@ Actions **should** be listed in the `_links:` for the related resource.
 ### Example
  `PUT /v2/apps/<guid>/start`
 
-## Query Parameters <a id="params"></a>
+## Query Parameters
 
 Query Parameters **MUST** include **ONLY** the following characters:
 
@@ -448,7 +448,7 @@ Multiple values:
 
 Filtering is the use of query parameters to return a subset of resources within a [Collection](#collections).
 
-Filter query parameters **MUST** have names that conform to the acceptable [query parameter](#params) names.
+Filter query parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
 Filters **should** allow a client to request resources matching multiple values of by accepting the filter as an array.
 
@@ -470,7 +470,7 @@ Filter parameters **should** be able to be combined with other filters on the sa
 
 ### Status Codes
 
-The HTTP status code returned for errors **MUST** be included in the documented [status codes](#responsecodes).
+The HTTP status code returned for errors **MUST** be included in the documented [status codes](#response-codes).
 
 ### Issues with v2 error format
 Currently looks like v2.
@@ -566,7 +566,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 }
 ```
 
-## Response Codes <a name="responsecodes"></a>
+## Response Codes
 
 ### Successful Requests
 
@@ -582,7 +582,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 |Status Code|Description|Verbs|
 |-|-|-|
-|303 See Other| This status **MUST** be returned when an async job finishes. It should include a location header containing the resource link. See more in the [async](#async) section. |GET, PATCH, PUT|
+|303 See Other| This status **MUST** be returned when an async job finishes. It should include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET, PATCH, PUT|
 
 
 ### Client Errors
@@ -893,7 +893,7 @@ GET /resource?fields[resource]=guid,name&fields[subresource]="color"
 ```
 
 
-## Asynchronicity <a name="async"></a>
+## Asynchronicity
 
 ### Currently
 
