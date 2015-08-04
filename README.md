@@ -104,17 +104,17 @@ List of terms:
 
 ### URL structure
 
-All endpoints shall be prefixed with an api version
-Pattern: ` /v<number>/...`
-Example: `/v3/...`
+All endpoints shall be prefixed with an api version  
+Pattern: ` /v<number>/...`  
+Example: `/v3/...`  
 
-Collections of resources are referenced by their resource name (plural)
-Pattern: `/v3/<resource name>`
-Example: `/v3/apps`
+Collections of resources are referenced by their resource name (plural)  
+Pattern: `/v3/<resource name>`  
+Example: `/v3/apps`  
 
-Individual resources are referenced their resource name (plural) followed by the guid
-Pattern: `/v3/<resource name>/<guid>`
-Example:  `/v3/apps/25fe21b8-8de2-40d0-93b0-c819101d1a11`
+Individual resources are referenced their resource name (plural) followed by the guid  
+Pattern: `/v3/<resource name>/<guid>`  
+Example:  `/v3/apps/25fe21b8-8de2-40d0-93b0-c819101d1a11`  
 
 ### GET
 Used to retrieve a single resource or a list of resources.
