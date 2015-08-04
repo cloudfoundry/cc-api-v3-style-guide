@@ -375,7 +375,7 @@ Pagination **MUST** include the following fields for pagination links:
 * `previous:` the previous page of resources
 * `next:` the next page of resources
 
-Pagination links **may** be `null`.  For example, if the page currently being displayed is the first page, then it makes sense for the `previous` link to be null.
+Pagination links **may** be `null`.  For example, if the page currently being displayed is the first page, then  `previous` link will be null.
 
 When pagination links contain a URL, they **MUST** be a JSON object with a field named `href:` containing a string with the URL for the next page.
 
