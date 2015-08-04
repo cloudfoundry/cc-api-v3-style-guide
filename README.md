@@ -410,7 +410,7 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 
 ## Actions
 
-Actions are API requests that are expected to initiate change within the Cloud Foundry runtime.  This is differentiated from requests which update a record, but require additional updates -- such as restarting an app -- to cause changes to a resource to take affect.  
+Actions are API requests that are expected to initiate change within the Cloud Foundry runtime.  This is differentiated from requests which update a record, but require additional updates — such as restarting an app — to cause changes to a resource to take affect.  
 
 Actions **MUST** use use PUT as their HTTP verb.
 
@@ -745,7 +745,7 @@ A use case for this would be to display an HTML page that includes information a
 
 ### Proposal A
 
-Included resources are in-lined at the top level of the primary resource.  If a resource within a resource -- `resource.otherresource` -- is requested, it is similarly inlined.
+Included resources are in-lined at the top level of the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is similarly inlined.
 
 ```
 GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
@@ -787,7 +787,7 @@ Questions:
 
 ### Proposal B
 
-Included resources are in-lined in an `included:` object on the primary resource.  If a resource within a resource -- `resource.otherresource` -- is requested, it is similarly inlined.
+Included resources are in-lined in an `included:` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is similarly inlined.
 
 ```
 GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
@@ -831,7 +831,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
 
 ### Proposal C
 
-Included resources are in-lined under their pluralized resource name in an `included:` object on the primary resource.  If a resource within a resource -- `resource.otherresource` -- is requested, it is added in the top level `included:` object and not repeated.
+Included resources are in-lined under their pluralized resource name in an `included:` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included:` object and not repeated.
 
 Question: how do you tell which type of included resource goes with another resource (through a relationships object?)
 
