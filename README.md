@@ -606,9 +606,13 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 ### Currently
 
-Associations are sometimes created by setting a `relationship_guid:` field on one of the resources. For example, `POST /v3/apps { "space_guid": "abc" }` creates an app associated to a space.
+Associations are sometimes created by setting a `relationship_guid:` field on one of the resources. 
 
-Other times associations are added via PUT requests to a nested resource, For example, `PUT /v3/apps/guid/routes { route_guid: the guid }` will add a route association to an app.
+* For example, `POST /v3/apps { "space_guid": "abc" }` creates an app associated to a space.
+
+Other times associations are added via PUT requests to a nested resource.
+
+* For example, `PUT /v3/apps/guid/routes { route_guid: the guid }` will add a route association to an app.
 
 An association can then be deleted via `DELETE /v3/apps/guid/routes { route_guid: the guid }`.
 
