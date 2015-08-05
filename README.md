@@ -897,7 +897,8 @@ GET /resource?fields[resource]=guid,name&fields[subresource]="color"
 
 ### Currently
 
-Via Mark: The original impetus for the `async` flag was
+Via Mark: The original impetus for the `async` flag was:
+
 1. The CC API could not make a major version bump, so it needed to be an additive change. The hope was to move CC to be fully async-by-default
 2. Long running requests could be triggered multiple times and bring down the CC
 3. Long running requests were getting clipped by network timeouts
