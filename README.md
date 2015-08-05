@@ -91,7 +91,7 @@ This document serves as a styleguide for the Cloud Controller API. It is intende
 
 List of terms:
 
- - Resource
+ - [Resource](#resources)
  - Collection: List of resources
  - REST actions:
 	 - Create
