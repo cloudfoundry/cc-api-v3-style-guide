@@ -582,7 +582,8 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 |Status Code|Description|Verbs|
 |---|---|---|
-|303 See Other| This status **MUST** be returned when an async job finishes. It should include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET, PATCH, PUT|
+|302 Found| This status **MUST** be returned when the cloud controller redirects to another location. Example: Downloading a package from an external blob store.  |GET|
+|303 See Other| This status **MUST** be returned when an async job finishes. It should include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET|
 
 
 ### Client Errors
