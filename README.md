@@ -251,15 +251,15 @@ A resource represents an individual object within the system, such as an app or 
 
 A resource **MUST** contain the following fields:
 
-* `guid:` a unique identifier for the resource
-* `created_at:` an ISO8601 compatible date and time that the resource was created
-* `updated_at:` an ISO8601 compatible date and time that the resource was last updated
+* `guid`: a unique identifier for the resource
+* `created_at`: an ISO8601 compatible date and time that the resource was created
+* `updated_at`: an ISO8601 compatible date and time that the resource was last updated
 
 A resource **may** contain additional fields which are the attributes describing the resource.
 
-A resource **should** contain a `_links:` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
+A resource **should** contain a `_links` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
 
-A resource **should** include a `self:` link object in the `_links:` field.
+A resource **should** include a `self` link object in the `_links` field.
 
 ### Example
 
@@ -286,8 +286,8 @@ Links provide URLs to relationships and actions for a resource.  Links are repre
 
 Each member of a links object is a "link".  
 A link **MUST** be a JSON object.
-A link **MUST** contain a `href:` field, which is a string containing the link's relative URL.
-A link **may** contain a `method:` field, which is a string containing the HTTP verb that must be used to follow the URL.
+A link **MUST** contain a `href` field, which is a string containing the link's relative URL.
+A link **may** contain a `method` field, which is a string containing the HTTP verb that must be used to follow the URL.
 
 ### Example
 
@@ -314,9 +314,9 @@ Note that the key is `_links` to reduce the likelihood of collisions with a hypo
 ## Collections
 A collection is a list of multiple Resources.  A collection is represented as a JSON object.
 
-A collection **MUST** contain a `resources:` field.  The resources field is an array containing multiple [Resources](#resources).
+A collection **MUST** contain a `resources` field.  The resources field is an array containing multiple [Resources](#resources).
 
-A collection **should** contain a `pagination:` field containing a [pagination](#pagination) object.
+A collection **should** contain a `pagination` field containing a [pagination](#pagination) object.
 
 ### Example
 
@@ -366,27 +366,27 @@ Pagination **may** be used by [Collections](#collections) to limit the number of
 
 This section will describe the preferred pagination strategy, however an individual collection **may** choose to implement a different strategy for performance reasons.  This means that the term "**MUST**", when used in this section, apply only to collections that implement the default pagination strategy.
 
-Pagination **MUST** include a `total_results:` field with an integer value of the total number of records in the collection.
+Pagination **MUST** include a `total_results` field with an integer value of the total number of records in the collection.
 
 Pagination **MUST** include the following fields for pagination links:
 
-* `first:` the first page of resources
-* `last:` the last page of resources
-* `previous:` the previous page of resources
-* `next:` the next page of resources
+* `first`: the first page of resources
+* `last`: the last page of resources
+* `previous`: the previous page of resources
+* `next`: the next page of resources
 
 Pagination links **may** be `null`.  For example, if the page currently being displayed is the first page, then  `previous` link will be null.
 
-When pagination links contain a URL, they **MUST** be a JSON object with a field named `href:` containing a string with the URL for the next page.
+When pagination links contain a URL, they **MUST** be a JSON object with a field named `href` containing a string with the URL for the next page.
 
 The URL **should** include all query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be returned in a specific order direction via a query parameter, then the pagination links should include the proper query parameter to maintain the requested direction.
 
 The following query parameters **should** be used for pagination:
 
-* `page:` the page number of resources to return (default: 1)
-* `per_page:` the number of resources to return in a paginated collection request (default: 50)
-* `order_by:` a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by
-* `order_direction:` the direction to returned the ordered collection in;  valid values **should** be `asc` or `desc`
+* `page`: the page number of resources to return (default: 1)
+* `per_page`: the number of resources to return in a paginated collection request (default: 50)
+* `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by
+* `order_direction`: the direction to returned the ordered collection in;  valid values **should** be `asc` or `desc`
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
@@ -416,7 +416,7 @@ Actions **MUST** use use PUT as their HTTP verb.
 
 Actions **may** accept a request body.
 
-Actions **should** be listed in the `_links:` for the related resource.
+Actions **should** be listed in the `_links` for the related resource.
 
 ### Example
  `PUT /v2/apps/<guid>/start`
@@ -607,7 +607,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 ### Currently
 
-Associations are sometimes created by setting a `relationship_guid:` field on one of the resources. 
+Associations are sometimes created by setting a `relationship_guid` field on one of the resources. 
 
 * For example, `POST /v3/apps { "space_guid": "abc" }` creates an app associated to a space.
 
@@ -792,7 +792,7 @@ Questions:
 
 ### Proposal B
 
-Included resources are in-lined in an `included:` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is similarly inlined.
+Included resources are in-lined in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is similarly inlined.
 
 ```
 GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
@@ -836,7 +836,7 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
 
 ### Proposal C
 
-Included resources are in-lined under their pluralized resource name in an `included:` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included:` object and not repeated.
+Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated.
 
 Question: how do you tell which type of included resource goes with another resource (through a relationships object?)
 
