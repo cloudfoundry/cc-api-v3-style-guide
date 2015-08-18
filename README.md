@@ -1,5 +1,5 @@
 
-#Cloud Controller API v3 Styleguide (Proposal)
+#Cloud Controller API v3 Style Guide (Proposal)
 
 ## Table of contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -7,6 +7,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Overview](#overview)
+  - [Guiding Principles](#guiding-principles)
   - [API Technologies](#api-technologies)
   - [API Design Inspirations](#api-design-inspirations)
 - [Requests](#requests)
@@ -70,15 +71,18 @@
     - [Grievances](#grievances)
   - [Proposal](#proposal)
   - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
-- [Style Guide Ideas (Style Guide Style Guide)](#style-guide-ideas-style-guide-style-guide)
-  - [Interesting Ideas](#interesting-ideas)
-  - [Questions](#questions)
-  - [Areas of Contention](#areas-of-contention)
-  - [Known SG Defects](#known-sg-defects)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
-This document serves as a styleguide for the Cloud Controller API. It is intended to act as a repository for patterns and best practices when designing and developing new API endpoints.
+This document serves as a style guide for the Cloud Controller API. It is intended to act as a repository for patterns and best practices when designing and developing new API endpoints.
+
+This is a living document; It will change over time as we learn more about our users and develop features.
+
+### Guiding Principles
+
+* **Consistency**: Understanding how to interact with one resource should inform how to interact with any resource.
+* **Discoverability**: API responses should guide users without the need for external documentation.
+* **Opinionatedness**: There should be one clear way to do something.
 
 ### API Technologies
 * **HTTP:** All API requests shall be made over HTTP.
@@ -607,7 +611,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 ### Currently
 
-Associations are sometimes created by setting a `relationship_guid` field on one of the resources. 
+Associations are sometimes created by setting a `relationship_guid` field on one of the resources.
 
 * For example, `POST /v3/apps { "space_guid": "abc" }` creates an app associated to a space.
 
