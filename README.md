@@ -57,19 +57,16 @@
   - [Server Errors](#server-errors)
 - [Relationships](#relationships)
   - [Currently](#currently)
-  - [Proposal A](#proposal-a-1)
-  - [Proposal A1](#proposal-a1)
+  - [Proposal](#proposal)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Proposal A](#proposal-a-2)
-  - [Proposal B](#proposal-b-1)
-  - [Proposal C](#proposal-c-1)
+  - [Proposal](#proposal-1)
 - [Requesting Partial Resources](#requesting-partial-resources)
   - [Proposal For Sub-Resources](#proposal-for-sub-resources)
 - [Asynchronicity](#asynchronicity)
   - [Currently](#currently-1)
     - [Grievances](#grievances)
-  - [Proposal](#proposal)
+  - [Proposal](#proposal-2)
   - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -717,97 +714,11 @@ This is a mechanism for including multiple related resources in a single respons
 
 A use case for this would be to display an HTML page that includes information about both an app and its space and would like to gather this information in one HTTP request.
 
-### Proposal A
-
-Included resources are in-lined at the top level of the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is similarly inlined.
-
-```
-GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
-
-{
-  "guid": "xyz",
-  "resource_field": "value",
-
-  "subresource": {
-    "guid": "abc",
-    "subresource_field": "other value"
-  },
-
-  "other_resources": [
-    {
-      "guid": "def",
-      "other_resource_field": "Zach",
-
-      "subresource": {
-        "guid": "abc",
-        "subresource_field": "other value"
-      }
-    },
-    {
-      "guid": "ght",
-      "other_resource_field": "Dances",
-
-      "subresource": {
-        "guid": "abc",
-        "subresource_field": "other value"
-      }
-    },
-  ]
-}
-```
-
-Questions:
-1. Do the sub resources include \_links and all that jazz?
-
-### Proposal B
-
-Included resources are in-lined in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is similarly inlined.
-
-```
-GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
-
-{
-  "guid": "xyz",
-  "resource_field": "value",
-
-  "included": {
-    "subresource": {
-      "guid": "abc",
-      "subresource_field": "other value"
-    },
-    "other_resources": [
-      {
-        "guid": "def",
-        "other_resource_field": "Zach",
-
-        "included": {
-          "subresource": {
-            "guid": "abc",
-            "subresource_field": "other value"
-          }
-        }
-      },
-      {
-        "guid": "ght",
-        "other_resource_field": "Dances",
-
-        "included": {
-          "subresource": {
-            "guid": "abc",
-            "subresource_field": "other value"
-          }
-        }
-      },
-    ]
-  }
-}
-```
-
-### Proposal C
+### Proposal
 
 Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated.
 
-Question: how do you tell which type of included resource goes with another resource (through a relationships object?)
+**Question:** how do you tell which type of included resource goes with another resource (through a relationships object?)
 
 ```
 GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
