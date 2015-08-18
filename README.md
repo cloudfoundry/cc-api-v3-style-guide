@@ -65,7 +65,6 @@
   - [Currently](#currently-1)
     - [Grievances](#grievances)
   - [Proposal](#proposal-3)
-  - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
@@ -750,18 +749,19 @@ Requests including the `async=true` query parameter will resolve asynchronously.
  * Not all endpoints that support it need it. Sending `async=true` in many cases will slow down the request, since there is the worker/polling overhead. A 1 second synchronous operation doesn't need to happen out of band with a 5 second polling interval.
 
 ### Proposal
-* `async=true` should only be available for resource operations that might take > 60 seconds (this might be impossible to determine).
-* the hope is what endpoints are async should be intuitive to the user
+Remove both flags. Instead, endpoints are responsible for behaving either asynchronously (return 202) or synchronously (don't return 202).
 
-To do a resource operation out of band, send the `async=true` flag.
-`POST /v3/resource?async=true`
+For async endpoints:
+`POST /v3/resource`
 
-The CC will return a 202 with a location header pointing to the job.
+The CC will return a 202 with a location header pointing to the job. Depending on the resource, it may also return a skeletal body containing the partial resource.
 ```
 202 Accepted
 Location: /v3/jobs/123
 
-{}
+{
+  "skeletor": "YOU! You will no longer stand between me and my destiny!"
+}
 ```
 
 Before the job has completed,  GET requests made to the job endpoint will return 200 with information about the status of the job.
@@ -788,16 +788,3 @@ Location: /v3/resource/<guid>
 ```
 
 Note that for asynchronous deletes, the redirect location will be to a no-longer-existant resource.
-
-### Async vs Accepts Incomplete
-
-Currently the CC will ignore the `async` flag if `accepts_incomplete` is included. This does not have to be the case for v3.
-
-|async|accepts_incomplete|Broker response|Result|
-|---|---|---|---|
-|true|true|synchronous|202 with job -> 303 to 'succeeded' instance|
-|true|true|asynchronous|202 with job -> 303 to 'in progress' instance|
-|false|true|synchronous|201 with 'succeeded' instance
-|false|true|asynchronous|202 with 'in progress' instance
-
-Another idea: We can assume that everyone using the v3 api accepts incomplete and have this be the only behavior.
