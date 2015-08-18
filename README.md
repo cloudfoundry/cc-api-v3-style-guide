@@ -89,8 +89,9 @@ This is a living document; It will change over time as we learn more about our u
 
 List of terms:
 
- - [Resource](#resources)
+ - [Resource](#resources): REST-style resources
  - [Collection](#collections): List of resources
+ - [Action](#actions): RPC-style actions
  - REST actions:
 	 - Create
 	 - Show
@@ -144,7 +145,7 @@ GET /v3/resource/:guid
 | User With No Visibility | 200 | Empty List |
 
 ### POST
-Used to create a resource or trigger an action on a resource.
+Used to create a resource.
 
 * POST requests **shall NOT** include query parameters
 * POST requests **may** include a request body
@@ -171,7 +172,7 @@ POST /v3/resource/:guid
 | Unauthorized User | 403 | Error |
 
 ### PUT
-Used to request that an action is performed.  Sometimes PATCH will update a resource and further actions such as starting or stopping an app are required to make the change take affect within the system.  PUT is used to indicate that an change will begin taking place in the system immediately after the request is accepted.  See [Actions](#actions) for more information.
+Used to trigger an [action](#actions). To update a resource, use [PATCH](#patch)
 
 * PUT requests **shall NOT** include query parameters
 * PUT requests **may** include a request body
@@ -180,18 +181,17 @@ Used to request that an action is performed.  Sometimes PATCH will update a reso
 Update a resource:
 
 ```
-PUT /v3/resource/:guid
+PUT /v3/resource/:guid/do_something
 
 {
-  name: "new name",
-  additional_parameter: "new value"
+  "with": "feeling",
 }
 ```
 
 ##### Responses
 |Scenario|Code(s)|Body|
 |---|---|---|
-| Authorized User (sync) | 201 | Updated Resource |
+| Authorized User (sync) | 200 | Empty |
 | Authorized User (async) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
 | Unauthorized User | 404 | Error |
@@ -216,7 +216,7 @@ PATCH /v3/resource/:guid
 ##### Responses
 |Scenario|Code(s)|Body|
 |---|---|---|
-| Authorized User (sync) | 201 | Updated Resource |
+| Authorized User (sync) | 200 | Updated Resource |
 | Authorized User (async) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
 | Unauthorized User | 404 | Error |
