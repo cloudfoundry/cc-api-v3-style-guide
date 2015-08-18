@@ -626,7 +626,7 @@ This currently feels a little clunky for several reasons:
 * The nested routes make it appear that the request is affecting a routes resource, but it is really a relationship that is being created or deleted
 * Associations become a top-level concern on the resource such that the way relationships exist for that resource are difficult to modify without causing breaking changes or leaving unused fields
 
-### Proposal A
+### Proposal
 
 Add a relationship object to resources similar to the jsonapi spec.
 
@@ -696,41 +696,6 @@ DELETE /v3/apps/guid/relationships/routes
   "data": [{"guid": "asdf" }, {"guid": "hgfg" }]
 }
 ```
-
-### Proposal A1
-
-Include the previous proposal, but include relationships on the root resource GET and allow updating relationships from the root resource.
-
-Response body for GET /v3/apps/:guid
-```json
-{
-  "name": "blah",
-  "relationships": {
-   "space": {"guid": "1234"},
-   "routes": [
-     {"guid": "2345"},
-     {"guid": "3456"}
-   ],
-  },
-  "_links": {...}
-}
-```
-
-Request body for PATCH /v3/apps/:guid
-```json
-{
-  "relationships": {
-   "space": {"guid": "1234"},
-   "routes": [
-     {"guid": "2345"},
-     {"guid": "3456"}
-   ],
-  }
-}
-```
-In this example, `space` is a to-one relationship and `routes` is a to-many relationship.  The result is that space is changed and all routes are replaced with the values in the request. Therefore, to do a partial update of to-many resources, one would have to use the nested relationships routes listed in Proposal A.
-
-An interesting side-effect of returning the relationships object on the resource body is that relationships and \_links have some amount of overlap.
 
 ## Nested Resources
 
