@@ -47,9 +47,7 @@
 - [Errors](#errors)
   - [Status Codes](#status-codes)
   - [Issues with v2 error format](#issues-with-v2-error-format)
-  - [Proposal A](#proposal-a)
-  - [Proposal B](#proposal-b)
-  - [Proposal C](#proposal-c)
+  - [Proposal](#proposal)
 - [Response Codes](#response-codes)
   - [Successful Requests](#successful-requests)
   - [Redirection](#redirection)
@@ -57,16 +55,16 @@
   - [Server Errors](#server-errors)
 - [Relationships](#relationships)
   - [Currently](#currently)
-  - [Proposal](#proposal)
+  - [Proposal](#proposal-1)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Proposal](#proposal-1)
+  - [Proposal](#proposal-2)
 - [Requesting Partial Resources](#requesting-partial-resources)
   - [Proposal For Sub-Resources](#proposal-for-sub-resources)
 - [Asynchronicity](#asynchronicity)
   - [Currently](#currently-1)
     - [Grievances](#grievances)
-  - [Proposal](#proposal-2)
+  - [Proposal](#proposal-3)
   - [Async vs Accepts Incomplete](#async-vs-accepts-incomplete)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -489,63 +487,13 @@ Currently looks like v2.
 * `code` does not have a clear mapping to what it means or how to resolve it
 
 
-### Proposal A
-
-```json
-{
-  "type": "Invalid Request",
-  "description": "The request body is not valid.",
-  "errors": [
-    {
-      "resource": "app",
-      "messages": [
-	    "Names must be unique",
-	    "Names may not contain numbers"
-      ]
-    },
-    {
-      "resource": "lunch",
-      "messages": [
-        "Potatoes cannot be perfectly round"
-      ]
-    }
-  ]
-}
-```
-
-### Proposal B
-
-This proposal includes the HTTP status code of the error.
-
-```json
-{
-  "status": 400,
-  "type": "Invalid Request",
-  "description": "The request body is not valid.",
-  "errors": [
-    {
-      "resource": "app",
-      "messages": [
-	    "Names must be unique",
-	    "Names may not contain numbers"
-      ]
-    },
-    {
-      "resource": "lunch",
-      "messages": [
-        "Potatoes cannot be perfectly round"
-      ]
-    }
-  ]
-}
-```
-
-### Proposal C
+### Proposal
 
 This proposal includes `code` which would be an internal unique identifier of a class of error.  This could be used for support scripts for CF operators.  The method for maintaining a list of these codes and their meanings would need to be determined  
 
 ```json
 {
+  "status": 400,
   "code": 123455,
   "type": "Invalid Request",
   "description": "The request body is not valid.",
