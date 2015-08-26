@@ -549,7 +549,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 |Status Code|Description
 |---|---|---|
 |500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
-|502 Bad Gateway|This status **should** be returned when an upstream service failure causes a request to fail.
+|502 Bad Gateway|This status **should** be returned when an upstream service failure causes a request to fail. Example: Being unable to reach requested service broker.
 
 ## Relationships
 
