@@ -439,7 +439,7 @@ Single value:
 `POST /v3/resources/start?async=true`
 
 Multiple values:
- `GET /v3/resources?names[]=firstname,names[]=secondname`
+ `GET /v3/resources?names=firstname,names=secondname`
 
 
 ## Filtering
@@ -454,15 +454,15 @@ Filter parameters **should** be able to be combined with other filters on the sa
 
 #### Example multiple value request
 
-`http://api.server.com/v3/resources?names[]=first_name,names[]=second_name`
+`http://api.server.com/v3/resources?names=first_name,names=second_name`
 
 #### Example single value request
 
-`http://api.server.com/v3/resources?names[]=the_name`
+`http://api.server.com/v3/resources?names=the_name`
 
 #### Example combined filters
 
-`http://api.server.com/v3/resources?names[]=the_name,relation_guids[]=d-e-f`
+`http://api.server.com/v3/resources?names=the_name,relation_guids=d-e-f`
 
 ## Errors
 
