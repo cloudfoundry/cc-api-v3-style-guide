@@ -59,6 +59,7 @@
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
   - [Proposal](#proposal-2)
+  - [Pagination of Related Resources](#pagination-of-related-resources)
 - [Requesting Partial Resources](#requesting-partial-resources)
   - [Proposal For Sub-Resources](#proposal-for-sub-resources)
 - [Asynchronicity](#asynchronicity)
@@ -695,7 +696,37 @@ GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subre
   }
 }
 ```
+###Pagination of Related Resources
+Related resources are paginated in a similar style to how normal responses are paginated.
 
+```
+GET /v3/apps/:guid?include=routes
+
+{
+  "guid": :guid,
+  "included": {
+  "routes": {
+    "resources": [{"guid": 1}, {"guid": 2}],
+    "links": {
+      "related": "/v3/apps/guid/routes"
+    },
+    "pagination": {
+      "total_results": 20,
+      "first": {
+        "href": "/v3/apps/:guid/routes?order_by=created_at&order_direction=desc&page=1&per_page=10"
+      },
+      "last": {
+        "href": "/v3/apps/:guid/routes?order_by=created_at&order_direction=desc&page=2&per_page=10"
+      },
+      "next": {
+        "href": "/v3/apps/:guid/routes?order_by=created_at&order_direction=desc&page=2&per_page=10"
+      },
+      "previous": null
+      }
+    }
+  }
+}
+```
 ## Requesting Partial Resources
 
 ```
