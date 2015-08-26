@@ -104,9 +104,8 @@ List of terms:
 
 ### URL structure
 
-All endpoints shall be prefixed with an api version  
-Pattern: ` /v:number/...`  
-Example: `/v3/...`  
+All endpoints shall be prefixed with /v3/.
+Pattern: `/v3/...`  
 
 Collections of resources are referenced by their resource name (plural)  
 Pattern: `/v3/:resource name`  
