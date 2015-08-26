@@ -88,18 +88,6 @@ This is a living document; It will change over time as we learn more about our u
 * **JSON API:** http://jsonapi.org/
 * **HAL:** http://stateless.co/hal_specification.html
 
-List of terms:
-
- - [Resource](#resources): REST-style resources
- - [Collection](#collections): List of resources
- - [Action](#actions): RPC-style actions
- - REST actions:
-	 - Create
-	 - Show
-	 - List
-	 - Update
-	 - Delete
-
 ## Requests
 
 ### URL structure
