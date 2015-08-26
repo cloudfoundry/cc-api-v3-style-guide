@@ -104,15 +104,15 @@ List of terms:
 ### URL structure
 
 All endpoints shall be prefixed with an api version  
-Pattern: ` /v<number>/...`  
+Pattern: ` /v:number/...`  
 Example: `/v3/...`  
 
 Collections of resources are referenced by their resource name (plural)  
-Pattern: `/v3/<resource name>`  
+Pattern: `/v3/:resource name`  
 Example: `/v3/apps`  
 
 Individual resources are referenced their resource name (plural) followed by the guid  
-Pattern: `/v3/<resource name>/<guid>`  
+Pattern: `/v3/:resource name/:guid`  
 Example:  `/v3/apps/25fe21b8-8de2-40d0-93b0-c819101d1a11`  
 
 ### GET
@@ -417,7 +417,7 @@ Actions **may** accept a request body.
 Actions **should** be listed in the `links` for the related resource.
 
 ### Example
- `PUT /v2/apps/<guid>/start`
+ `PUT /v2/apps/:guid/start`
 
 ## Query Parameters
 
@@ -645,11 +645,11 @@ DELETE /v3/apps/guid/relationships/routes
 
 Nested resources can optionally be accessed through their parent resource.
 ```
-GET /v3/parent_resources/<parent_guid>/nested_resources
+GET /v3/parent_resources/:parent_guid/nested_resources
 ```
 This will be equivalent to
 ```
-GET /v3/nested_resources?parent_guid=<parent_guid>
+GET /v3/nested_resources?parent_guid=:parent_guid
 ```
 
 These end points are optional and may not exist for all resources. Good opportunities for creating them:
@@ -782,7 +782,7 @@ GET /v3/jobs/123
 ```
 ```
 303 See Other
-Location: /v3/resource/<guid>
+Location: /v3/resource/:guid
 
 {}
 ```
