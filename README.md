@@ -75,12 +75,12 @@ This is a living document; It will change over time as we learn more about our u
 
 ### Guiding Principles
 
-* **Consistency**: Understanding how to interact with one resource should inform how to interact with any resource.
-* **Discoverability**: API responses should guide users without the need for external documentation.
-* **Opinionatedness**: There should be one clear way to do something.
+* **Consistency**: Understanding how to interact with one resource must inform how to interact with any resource.
+* **Discoverability**: API responses must guide users without the need for external documentation.
+* **Opinionatedness**: There must be one clear way to do something.
 
 ### API Technologies
-* **HTTP:** All API requests shall be made over HTTP.
+* **HTTP:** All API requests must be made over HTTP.
 * **JSON:** All API response bodies will be JSON objects.
 
 ### API Design Inspirations
@@ -104,7 +104,7 @@ List of terms:
 
 ### URL structure
 
-All endpoints shall be prefixed with /v3/.
+All endpoints must be prefixed with /v3/.
 Pattern: `/v3/...`  
 
 Collections of resources are referenced by their resource name (plural)  
@@ -119,7 +119,7 @@ Example:  `/v3/apps/25fe21b8-8de2-40d0-93b0-c819101d1a11`
 Used to retrieve a single resource or a list of resources.
 
 * GET requests **may** include query parameters
-* GET requests **shall NOT** include a request body
+* GET requests **must NOT** include a request body
 
 #### Examples
 Show individual resource:
@@ -147,7 +147,7 @@ GET /v3/resource/:guid
 ### POST
 Used to create a resource.
 
-* POST requests **shall NOT** include query parameters
+* POST requests **must NOT** include query parameters
 * POST requests **may** include a request body
 
 #### Examples
@@ -174,7 +174,7 @@ POST /v3/resource/:guid
 ### PUT
 Used to trigger an [action](#actions). To update a resource, use [PATCH](#patch)
 
-* PUT requests **shall NOT** include query parameters
+* PUT requests **must NOT** include query parameters
 * PUT requests **may** include a request body
 
 #### Examples
@@ -199,7 +199,7 @@ PUT /v3/resource/:guid/do_something
 ### PATCH
 Used to update a portion of a resource.
 
-* PATCH requests **shall NOT** include query parameters
+* PATCH requests **must NOT** include query parameters
 * PATCH requests **may** include a request body
 
 #### Examples
@@ -225,7 +225,7 @@ PATCH /v3/resource/:guid
 Used to delete a resource.
 
 * DELETE requests **may** include query parameters
-* DELETE requests **shall NOT** include a request body
+* DELETE requests **must NOT** include a request body
 
 #### Examples
 Delete a resource:
@@ -255,9 +255,9 @@ A resource **MUST** contain the following fields:
 
 A resource **may** contain additional fields which are the attributes describing the resource.
 
-A resource **should** contain a `links` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
+A resource **MUST** contain a `links` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
 
-A resource **should** include a `self` link object in the `links` field.
+A resource **MUST** include a `self` link object in the `links` field.
 
 ### Example
 
@@ -314,7 +314,7 @@ A collection is a list of multiple Resources.  A collection is represented as a 
 
 A collection **MUST** contain a `resources` field.  The resources field is an array containing multiple [Resources](#resources).
 
-A collection **should** contain a `pagination` field containing a [pagination](#pagination) object.
+A collection **MUST** contain a `pagination` field containing a [pagination](#pagination) object.
 
 ### Example
 
@@ -377,14 +377,14 @@ Pagination links **may** be `null`.  For example, if the page currently being di
 
 When pagination links contain a URL, they **MUST** be a JSON object with a field named `href` containing a string with the URL for the next page.
 
-The URL **should** include all query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be returned in a specific order direction via a query parameter, then the pagination links should include the proper query parameter to maintain the requested direction.
+The URL **MUST** include all query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be returned in a specific order direction via a query parameter, then the pagination links must include the proper query parameter to maintain the requested direction.
 
-The following query parameters **should** be used for pagination:
+The following query parameters **MUST** be used for pagination:
 
 * `page`: the page number of resources to return (default: 1)
 * `per_page`: the number of resources to return in a paginated collection request (default: 50)
 * `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by
-* `order_direction`: the direction to returned the ordered collection in;  valid values **should** be `asc` or `desc`
+* `order_direction`: the direction to returned the ordered collection in;  valid values **MUST** be `asc` or `desc`
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
@@ -414,7 +414,7 @@ Actions **MUST** use use PUT as their HTTP verb.
 
 Actions **may** accept a request body.
 
-Actions **should** be listed in the `links` for the related resource.
+Actions **MUST** be listed in the `links` for the related resource.
 
 ### Example
  `PUT /v2/apps/:guid/start`
@@ -430,7 +430,7 @@ Query Parameters **MUST** include **ONLY** the following characters:
 
 The bracket ([, ]) characters **MUST** be used **ONLY** at the end of the query parameter name, to indicate it accepts an array of values.
 
-Query parameters that accept multiple values **should** be pluralized and use brackets to accept an array of values.
+Query parameters that accept multiple values **MUST** be pluralized and use brackets to accept an array of values.
 
 If any request receives a query parameter it does not understand, the response **MUST** be a `400 Bad Request`.
 
@@ -448,9 +448,9 @@ Filtering is the use of query parameters to return a subset of resources within 
 
 Filter query parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
-Filters **should** allow a client to request resources matching multiple values of by accepting the filter as an array.
+Filters **MUST** allow a client to request resources matching multiple values of by accepting the filter as an array.
 
-Filter parameters **should** be able to be combined with other filters on the same collection.
+Filter parameters **MUST** be able to be combined with other filters on the same collection.
 
 #### Example multiple value request
 
@@ -520,7 +520,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 |Status Code|Description|Verbs|
 |---|---|---|
-|200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This should only be used if there is not a more appropriate 2XX response code. |GET, PATCH, PUT|
+|200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This must only be used if there is not a more appropriate 2XX response code. |GET, PATCH, PUT|
 |201 Created|This status **MUST** be returned for synchronous requests that result in the creation of a new resource.|POST|
 |202 Accepted|This status **MUST** be returned for requests that have been successfully accepted and will be asynchronously completed at a later time.|POST,PATCH,PUT,DELETE|
 |204 No Content|This status **MUST** be returned for synchronous requests that complete successfully and have no response body.|DELETE
@@ -531,7 +531,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 |Status Code|Description|Verbs|
 |---|---|---|
 |302 Found| This status **MUST** be returned when the cloud controller redirects to another location. Example: Downloading a package from an external blob store.  |GET|
-|303 See Other| This status **MUST** be returned when an async job finishes. It should include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET|
+|303 See Other| This status **MUST** be returned when an async job finishes. It must include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET|
 
 
 ### Client Errors
@@ -549,7 +549,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 |Status Code|Description
 |---|---|---|
 |500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
-|502 Bad Gateway|This status **should** be returned when an upstream service failure causes a request to fail. Example: Being unable to reach requested service broker.
+|502 Bad Gateway|This status **MUST** be returned when an upstream service failure causes a request to fail. Example: Being unable to reach requested service broker.
 
 ## Relationships
 
