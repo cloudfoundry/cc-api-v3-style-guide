@@ -255,9 +255,9 @@ A resource **MUST** contain the following fields:
 
 A resource **may** contain additional fields which are the attributes describing the resource.
 
-A resource **should** contain a `_links` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
+A resource **should** contain a `links` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
 
-A resource **should** include a `self` link object in the `_links` field.
+A resource **should** include a `self` link object in the `links` field.
 
 ### Example
 
@@ -270,7 +270,7 @@ A resource **should** include a `self` link object in the `_links` field.
   "name": "resource1",
   "description": "an example resource",
 
-  "_links": {
+  "links": {
     "self": {
       "href": "/v3/resources/a-b-c"
     }
@@ -290,7 +290,7 @@ A link **may** contain a `method` field, which is a string containing the HTTP v
 ### Example
 
 ```json
-"_links": {
+"links": {
   "self": {
     "href": "/v3/apps/a-b-c"
   },
@@ -307,7 +307,7 @@ A link **may** contain a `method` field, which is a string containing the HTTP v
 }
 ```
 
-Note that the key is `_links` to reduce the likelihood of collisions with a hypothetical resource field named `links`.
+Note that the key is `links` to reduce the likelihood of collisions with a hypothetical resource field named `links`.
 
 ## Collections
 A collection is a list of multiple Resources.  A collection is represented as a JSON object.
@@ -326,7 +326,7 @@ A collection **should** contain a `pagination` field containing a [pagination](#
       "created_at": "2015-07-06T23:22:56Z",
       "updated_at": "2015-07-08T23:22:56Z",
 
-      "_links": {
+      "links": {
         "self": {
           "href": "/v3/resources/a-b-c"
         }
@@ -337,7 +337,7 @@ A collection **should** contain a `pagination` field containing a [pagination](#
       "created_at": "2015-07-06T23:22:56Z",
       "updated_at": "2015-07-08T23:22:56Z",
 
-      "_links": {
+      "links": {
         "self": {
           "href": "/v3/resources/d-e-f"
         }
@@ -414,7 +414,7 @@ Actions **MUST** use use PUT as their HTTP verb.
 
 Actions **may** accept a request body.
 
-Actions **should** be listed in the `_links` for the related resource.
+Actions **should** be listed in the `links` for the related resource.
 
 ### Example
  `PUT /v2/apps/<guid>/start`
@@ -587,7 +587,7 @@ POST /v3/apps
      {"guid": "3456"}
    ],
   },
-  "_links": {...}
+  "links": {...}
 }
 ```
 
@@ -787,4 +787,4 @@ Location: /v3/resource/<guid>
 {}
 ```
 
-Note that for asynchronous deletes, the redirect location will be to a no-longer-existant resource.
+Note that for asynchronous deletes, the redirect location will be to a no-longer-existent resource.
