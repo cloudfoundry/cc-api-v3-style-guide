@@ -39,7 +39,9 @@
 - [Actions](#actions)
   - [Example](#example-4)
 - [Query Parameters](#query-parameters)
-    - [Examples:](#examples)
+    - [Example](#example-5)
+- [Field Names](#field-names)
+    - [Example](#example-6)
 - [Filtering](#filtering)
     - [Example multiple value request](#example-multiple-value-request)
     - [Example single value request](#example-single-value-request)
@@ -422,13 +424,36 @@ Query parameters that accept multiple values **MUST** be pluralized and use brac
 
 If any request receives a query parameter it does not understand, the response **MUST** be a `400 Bad Request`.
 
-####Examples:
+####Example
 Single value:
 `GET /v3/apps?names=firstname`
 
 Multiple values:
  `GET /v3/apps?names=firstname,secondname`
 
+## Field Names
+
+Resource Fields **MUST** include **ONLY** the following characters:
+
+* a-z (lowercase only)
+* _ (underscore)
+
+Resource fields that accept multiple values **MUST** be pluralized.
+
+####Example:
+```json
+{
+  "resources": [
+    {
+      "guid": "guid-1",
+      "environment_variables": {
+        "animal": "fish",
+        "color": "teal"
+      }
+    }
+  ]
+}
+```
 
 ## Filtering
 
