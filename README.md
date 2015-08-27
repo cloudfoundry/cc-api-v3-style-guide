@@ -146,8 +146,8 @@ Create a resource:
 POST /v3/apps/
 
 {
-  name: "name",
-  additional_parameter: "value"
+  name: "cool_app",
+  space_guid: "123guid"
 }
 ```
 
@@ -284,10 +284,10 @@ A link **may** contain a `method` field, which is a string containing the HTTP v
     "href": "/v3/apps/a-b-c"
   },
   "space": {
-    "href": "/v3/apps/d-e-f/relationships/space"
+    "href": "/v3/apps/a-b-c/relationships/space"
   },
   "processes": {
-	"href": "/v3/apps/d-e-f/relationships/processes"
+	"href": "/v3/apps/a-b-c/relationships/processes"
   },
   "start": {
     "href": "/v3/apps/a-b-c/start",
@@ -675,11 +675,11 @@ GET /v3/apps/:guid?include=space,organization,organization.spaces
       {
       ( this resource also wanted the same subresource as above, but it was included once so we do not add it again)
         "guid": "def",  
-        "other_resource_field": "Zach",
+        "name": "cool_organization",
       },
       {
         "guid": "ght",
-        "other_resource_field": "Dances",
+        "name": "not_as_cool_space",
       },
     ]
   }
@@ -719,7 +719,7 @@ GET /v3/apps/:guid?include=routes
 ## Requesting Partial Resources
 
 ```
-GET /resource?fields=guid,name
+GET /apps?fields=guid,name
 
 {
   "guid": "some-guid",
@@ -731,14 +731,14 @@ GET /resource?fields=guid,name
 
 If we want to be able to filter the fields of subresources, we could do something like:
 ```
-GET /resource?fields[resource]=guid,name&fields[subresource]="color"
+GET /apps?fields[apps]=guid,name&fields[droplets]="buildpack"
 
 {
   "guid": "some-guid",
   "name": "Zach",
   "included": {
-    "subresource": {
-      "color": "red"
+    "droplet": {
+      "buildpack": "ruby"
     }
   }
 }
