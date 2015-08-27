@@ -371,8 +371,9 @@ The following query parameters **MUST** be used for pagination:
 
 * `page`: the page number of resources to return (default: 1)
 * `per_page`: the number of resources to return in a paginated collection request (default: 50)
-* `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by
-* `order_direction`: the direction to returned the ordered collection in;  valid values **MUST** be `asc` or `desc`
+* `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by 
+
+When collections are ordered by a subset of fields, each field **MUST** be prepended by "+" or "-" to indicate ascending or descending order direction respectively.
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
@@ -382,13 +383,13 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 "pagination:" {
   "total_results": 20,
   "first": {
-    "href": "/v3/resources?order_by=created_at&order_direction=desc&page=1&per_page=10"
+    "href": "/v3/resources?order_by=-created_at&page=1&per_page=10"
   },
   "last": {
-    "href": "/v3/resources?order_by=created_at&order_direction=desc&page=2&per_page=10"
+    "href": "/v3/resources?order_by=-created_at&page=2&per_page=10"
   },
   "next": {
-    "href": "/v3/resources?order_by=created_at&order_direction=desc&page=2&per_page=10"
+    "href": "/v3/resources?order_by=-created_at&page=2&per_page=10"
   },
   "previous": null
 }
@@ -700,13 +701,13 @@ GET /v3/apps/:guid?include=routes
     "pagination": {
       "total_results": 20,
       "first": {
-        "href": "/v3/apps/:guid/routes?order_by=created_at&order_direction=desc&page=1&per_page=10"
+        "href": "/v3/apps/:guid/routes?order_by=-created_at&page=1&per_page=10"
       },
       "last": {
-        "href": "/v3/apps/:guid/routes?order_by=created_at&order_direction=desc&page=2&per_page=10"
+        "href": "/v3/apps/:guid/routes?order_by=-created_at&page=2&per_page=10"
       },
       "next": {
-        "href": "/v3/apps/:guid/routes?order_by=created_at&order_direction=desc&page=2&per_page=10"
+        "href": "/v3/apps/:guid/routes?order_by=-created_at&page=2&per_page=10"
       },
       "previous": null
       }
