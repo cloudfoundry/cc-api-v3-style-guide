@@ -112,7 +112,7 @@ Used to retrieve a single resource or a list of resources.
 #### Examples
 Show individual resource:
 ```
-GET /v3/resource/:guid
+GET /v3/apps/:guid
 ```
 
 ##### Responses (Resource)
@@ -123,7 +123,7 @@ GET /v3/resource/:guid
 
 List collection of resources:
 ```
-GET /v3/resource/:guid
+GET /v3/apps/
 ```
 ##### Responses (Collection)
 |Scenario|Code|Body|
@@ -143,7 +143,7 @@ Used to create a resource.
 Create a resource:
 
 ```
-POST /v3/resource/:guid
+POST /v3/apps/
 
 {
   name: "name",
@@ -169,10 +169,11 @@ Used to trigger an [action](#actions). To update a resource, use [PATCH](#patch)
 Update a resource:
 
 ```
-PUT /v3/resource/:guid/do_something
+PUT /v3/apps/:guid/
 
 {
-  "with": "feeling",
+  "name": "new_app_name",
+  "space_guid": "1234guid"
 }
 ```
 
@@ -194,10 +195,10 @@ Used to update a portion of a resource.
 Partially update a resource:
 
 ```
-PATCH /v3/resource/:guid
+PATCH /v3/apps/:guid
 
 {
-  additional_parameter: "new value"
+  "name": "new_app_name"
 }
 ```
 
@@ -219,7 +220,7 @@ Used to delete a resource.
 Delete a resource:
 
 ```
-DELETE /v3/resource/:guid
+DELETE /v3/apps/:guid
 ```
 
 ##### Responses
@@ -255,12 +256,12 @@ A resource **MUST** include a `self` link object in the `links` field.
   "created_at": "2015-07-06T23:22:56Z",
   "updated_at": "2015-07-08T23:22:56Z",
 
-  "name": "resource1",
-  "description": "an example resource",
+  "name": "dora",
+  "description": "an example app",
 
   "links": {
     "self": {
-      "href": "/v3/resources/a-b-c"
+      "href": "/v3/apps/a-b-c"
     }
   }
 }
@@ -308,7 +309,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
 ```json
 {
-  "resources": [
+  "apps": [
     {
       "guid": "a-b-c",
       "created_at": "2015-07-06T23:22:56Z",
@@ -316,7 +317,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
       "links": {
         "self": {
-          "href": "/v3/resources/a-b-c"
+          "href": "/v3/apps/a-b-c"
         }
       }
     },
@@ -327,7 +328,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
       "links": {
         "self": {
-          "href": "/v3/resources/d-e-f"
+          "href": "/v3/apps/d-e-f"
         }
       }
     }
@@ -335,10 +336,10 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
   "pagination": {
     "total_results": 2,
     "first": {
-      "href": "/v3/resources?page=1&per_page=10"
+      "href": "/v3/apps?page=1&per_page=10"
     },
     "last": {
-      "href": "/v3/resources?page=1&per_page=10"
+      "href": "/v3/apps?page=1&per_page=10"
     },
     "next": null,
     "previous": null
@@ -383,13 +384,13 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 "pagination:" {
   "total_results": 20,
   "first": {
-    "href": "/v3/resources?order_by=-created_at&page=1&per_page=10"
+    "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
   },
   "last": {
-    "href": "/v3/resources?order_by=-created_at&page=2&per_page=10"
+    "href": "/v3/apps?order_by=-created_at&page=2&per_page=10"
   },
   "next": {
-    "href": "/v3/resources?order_by=-created_at&page=2&per_page=10"
+    "href": "/v3/apps?order_by=-created_at&page=2&per_page=10"
   },
   "previous": null
 }
@@ -425,10 +426,10 @@ If any request receives a query parameter it does not understand, the response *
 
 ####Examples:
 Single value:
-`POST /v3/resources/start?async=true`
+`GET /v3/apps?names=firstname`
 
 Multiple values:
- `GET /v3/resources?names=firstname,names=secondname`
+ `GET /v3/apps?names=firstname,secondname`
 
 
 ## Filtering
@@ -443,15 +444,15 @@ Filter parameters **MUST** be able to be combined with other filters on the same
 
 #### Example multiple value request
 
-`http://api.server.com/v3/resources?names=first_name,names=second_name`
+`http://api.server.com/v3/apps?names=first_name,second_name`
 
 #### Example single value request
 
-`http://api.server.com/v3/resources?names=the_name`
+`http://api.server.com/v3/apps?names=the_name`
 
 #### Example combined filters
 
-`http://api.server.com/v3/resources?names=the_name,relation_guids=d-e-f`
+`http://api.server.com/v3/apps?names=the_name,space_guids=d-e-f`
 
 ## Errors
 
@@ -634,11 +635,11 @@ DELETE /v3/apps/guid/relationships/routes
 
 Nested resources can optionally be accessed through their parent resource.
 ```
-GET /v3/parent_resources/:parent_guid/nested_resources
+GET /v3/apps/:guid/droplets
 ```
 This will be equivalent to
 ```
-GET /v3/nested_resources?parent_guid=:parent_guid
+GET /v3/droplets?app_guids=:app_guid
 ```
 
 These end points are optional and may not exist for all resources. Good opportunities for creating them:
@@ -657,20 +658,20 @@ Included resources are in-lined under their pluralized resource name in an `incl
 **Question:** how do you tell which type of included resource goes with another resource (through a relationships object?)
 
 ```
-GET /v3/resource/:guid?include=subresource,other_resources,other_resources.subresource
+GET /v3/apps/:guid?include=space,organization,organization.spaces
 
 {
   "guid": "xyz",
   "resource_field": "value",
 
   "included": {
-    "subresources": [
+    "space": [
       {
-        "guid": "abc",
-        "subresource_field": "other value"
+        "guid": "some_space_guid",
+        "name": "cool_space
       }
     ],
-    "other_resources": [
+    "organization": [
       {
       ( this resource also wanted the same subresource as above, but it was included once so we do not add it again)
         "guid": "def",  
