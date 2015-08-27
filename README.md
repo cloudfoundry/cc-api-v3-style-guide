@@ -533,12 +533,8 @@ Query Parameters **MUST** include **ONLY** the following characters:
 
 * a-z (lowercase only)
 * _ (underscore)
-* [
-* ]
 
-The bracket ([, ]) characters **MUST** be used **ONLY** at the end of the query parameter name, to indicate it accepts an array of values.
-
-Query parameters that accept multiple values **MUST** be pluralized and use brackets to accept an array of values.
+Query parameters that accept multiple values **MUST** be pluralized.
 
 If any request receives a query parameter it does not understand, the response **MUST** be a `400 Bad Request`.
 
