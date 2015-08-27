@@ -351,8 +351,6 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
 Pagination **may** be used by [Collections](#collections) to limit the number of resources returned at a time.  Pagination is requested by a client through the use of query parameters. Pagination is represented as a JSON object.
 
-This section will describe the preferred pagination strategy, however an individual collection **may** choose to implement a different strategy for performance reasons.  This means that the term "**MUST**", when used in this section, apply only to collections that implement the default pagination strategy.
-
 Pagination **MUST** include a `total_results` field with an integer value of the total number of records in the collection.
 
 Pagination **MUST** include the following fields for pagination links:
