@@ -440,6 +440,8 @@ Filters **MUST** allow a client to request resources matching multiple values of
 
 Filter parameters **MUST** be able to be combined with other filters on the same collection.
 
+Filter parameters **MAY** use query operators for filtering numbers and dates.
+
 #### Example multiple value request
 
 `http://api.server.com/v3/apps?names=first_name,second_name`
@@ -451,6 +453,10 @@ Filter parameters **MUST** be able to be combined with other filters on the same
 #### Example combined filters
 
 `http://api.server.com/v3/apps?names=the_name,space_guids=d-e-f`
+
+#### Example filter with query operators
+
+`http://api.server.com/v3/apps?q=memory:512&q=instances>5`
 
 ## Errors
 
