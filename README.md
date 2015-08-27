@@ -10,6 +10,7 @@
   - [Guiding Principles](#guiding-principles)
   - [API Technologies](#api-technologies)
   - [API Design Inspirations](#api-design-inspirations)
+  - [Overview Example](#overview-example)
 - [Requests](#requests)
   - [URL structure](#url-structure)
   - [GET](#get)
@@ -89,6 +90,123 @@ This is a living document; It will change over time as we learn more about our u
 * **REST:**  https://en.wikipedia.org/wiki/Representational_state_transfer
 * **JSON API:** http://jsonapi.org/
 * **HAL:** http://stateless.co/hal_specification.html
+
+### Overview Example
+Here is an example request to get apps filtered by query parameters:
+
+```
+GET /v3/apps?names=dora,kailan&order_by=+created_at&page=1&per_page=2
+```
+
+Here is the respective response body:
+
+```json
+{
+  "pagination": {
+    "total_results": 3,
+    "first": {
+      "href": "/v3/apps?names=dora,kailan&order_by=+created_at&page=1&per_page=2"
+    },
+    "last": {
+      "href": "/v3/apps?names=dora,kailan&order_by=+created_at&page=2&per_page=2"
+    },
+    "next": {
+      "href": "/v3/apps?names=dora,kailan&order_by=+created_at&page=2&per_page=2"
+    },
+    "previous": null
+  },
+  "resources": [
+    {
+      "guid": "guid-00133700-abcd-1234-9000-3f70a011bc28",
+      "name": "dora",
+      "desired_state": "STOPPED",
+      "total_desired_instances": 0,
+      "buildpack": null,
+      "created_at": "2015-08-06T00:36:20Z",
+      "updated_at": null,
+      "environment_variables": {
+
+      },
+      "links": {
+        "self": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28"
+        },
+        "space": {
+          "href": "/v2/spaces/ab09cd29-9420-f021-g20d-123431420768"
+        },
+        "processes": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/processes"
+        },
+        "routes": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/routes"
+        },
+        "packages": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/packages"
+        },
+        "droplets": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/droplets"
+        },
+        "start": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/start",
+          "method": "PUT"
+        },
+        "stop": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/stop",
+          "method": "PUT"
+        },
+        "assign_current_droplet": {
+          "href": "/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28/current_droplet",
+          "method": "PUT"
+        }
+      }
+    },
+    {
+      "guid": "guid-bd7369a8-deed-ff1a-2315-77410293a922",
+      "name": "kailan",
+      "desired_state": "STOPPED",
+      "total_desired_instances": 0,
+      "buildpack": null,
+      "created_at": "2015-08-07T00:40:52Z",
+      "updated_at": null,
+      "environment_variables": {
+
+      },
+      "links": {
+        "self": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922"
+        },
+        "space": {
+          "href": "/v2/spaces/881029ab-4edd-4920-af10-6386967209d1"
+        },
+        "processes": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/processes"
+        },
+        "routes": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/routes"
+        },
+        "packages": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/packages"
+        },
+        "droplets": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/droplets"
+        },
+        "start": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/start",
+          "method": "PUT"
+        },
+        "stop": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/stop",
+          "method": "PUT"
+        },
+        "assign_current_droplet": {
+          "href": "/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922/current_droplet",
+          "method": "PUT"
+        }
+      }
+    }
+  ]
+}
+```
 
 ## Requests
 
@@ -477,7 +595,7 @@ Filter parameters **MAY** use query operators for filtering numbers and dates.
 
 #### Example combined filters
 
-`http://api.server.com/v3/apps?names=the_name,space_guids=d-e-f`
+`http://api.server.com/v3/apps?names=the_name&space_guids=d-e-f`
 
 #### Example filter with query operators
 
