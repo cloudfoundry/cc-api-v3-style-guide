@@ -429,7 +429,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
 ```json
 {
-  "apps": [
+  "resources": [
     {
       "guid": "a-b-c",
       "created_at": "2015-07-06T23:22:56Z",
