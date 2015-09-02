@@ -874,7 +874,7 @@ GET /apps?fields=guid,name
 
 If we want to be able to filter the fields of subresources, we could do something like:
 ```
-GET /apps?fields[apps]=guid,name&fields[droplets]="buildpack"
+GET /apps?fields[apps]=guid,name&fields[droplets]=buildpack
 
 {
   "guid": "some-guid",
