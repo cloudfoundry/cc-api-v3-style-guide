@@ -289,11 +289,11 @@ Used to trigger an [action](#actions). To update a resource, use [PATCH](#patch)
 Update a resource:
 
 ```
-PUT /v3/apps/:guid/
+PUT /v3/apps/:guid/processes/web/scale
 
 {
-  "name": "new_app_name",
-  "space_guid": "1234guid"
+  "instances": 100,
+  "memory_in_mb": 2048
 }
 ```
 
