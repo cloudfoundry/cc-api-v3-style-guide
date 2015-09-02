@@ -525,7 +525,7 @@ Actions **may** accept a request body.
 Actions **MUST** be listed in the `links` for the related resource.
 
 ### Example
- `PUT /v2/apps/:guid/start`
+ `PUT /v3/apps/:guid/start`
 
 ## Query Parameters
 
