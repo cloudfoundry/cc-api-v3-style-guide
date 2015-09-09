@@ -492,7 +492,7 @@ The following query parameters **MUST** be used for pagination:
 * `per_page`: the number of resources to return in a paginated collection request (default: 50)
 * `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by 
 
-When collections are ordered by a subset of fields, each field **MUST** be prepended by "+" or "-" to indicate ascending or descending order direction respectively.
+When collections are ordered by a subset of fields, each field **MAY** be prepended by "+" or "-" to indicate ascending or descending order direction respectively. If the field is not prepended, the ordering will default to ascending.
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
