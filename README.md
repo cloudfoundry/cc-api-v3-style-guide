@@ -11,7 +11,7 @@
   - [API Technologies](#api-technologies)
   - [API Design Inspirations](#api-design-inspirations)
   - [Overview Example](#overview-example)
-- [Requests](#requests)
+- [Requests](#requests)ad
   - [URL structure](#url-structure)
   - [GET](#get)
     - [Examples](#examples)
@@ -713,8 +713,7 @@ POST /v3/apps
      {"guid": "2345"},
      {"guid": "3456"}
    ],
-  },
-  "links": {...}
+  }
 }
 ```
 
