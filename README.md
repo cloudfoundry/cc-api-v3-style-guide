@@ -11,7 +11,7 @@
   - [API Technologies](#api-technologies)
   - [API Design Inspirations](#api-design-inspirations)
   - [Overview Example](#overview-example)
-- [Requests](#requests)ad
+- [Requests](#requests)
   - [URL structure](#url-structure)
   - [GET](#get)
     - [Examples](#examples)
