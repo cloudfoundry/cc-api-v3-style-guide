@@ -310,6 +310,7 @@ Used to update a portion of a resource.
 
 * PATCH requests **must NOT** include query parameters
 * PATCH requests **may** include a request body
+* PATCH operations **MUST** apply all requested updates or none.
 
 #### Examples
 Partially update a resource:
