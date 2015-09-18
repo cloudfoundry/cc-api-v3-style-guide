@@ -286,7 +286,7 @@ Used to trigger an [action](#actions). To update a resource, use [PATCH](#patch)
 * PUT requests **may** include a request body
 
 #### Examples
-Update a resource:
+Trigger an action:
 
 ```
 PUT /v3/apps/:guid/processes/web/scale
