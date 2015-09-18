@@ -394,7 +394,7 @@ Links provide URLs to relationships and actions for a resource.  Links are repre
 Each member of a links object is a "link".  
 A link **MUST** be a JSON object.
 A link **MUST** contain a `href` field, which is a string containing the link's relative URL.
-A link **may** contain a `method` field, which is a string containing the HTTP verb that must be used to follow the URL.
+A link **may** contain a `method` field, which is a string containing the HTTP verb that must be used to follow the URL.  If the `method` field is not included then the link **MUST** be available using GET.
 
 ### Example
 
