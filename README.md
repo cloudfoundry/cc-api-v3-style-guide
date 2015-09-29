@@ -98,6 +98,8 @@ Here is an example request to get apps filtered by query parameters:
 GET /v3/apps?names=dora,kailan&order_by=+created_at&page=1&per_page=2
 ```
 
+Note that the examples in the style guide to not encode query strings. This is to make the examples more human-readable. In actuality, all requests and responses must contain correctly encoded characters. For more information see [Query Parameters](#query-parameters).
+
 Here is the respective response body:
 
 ```json
@@ -539,12 +541,17 @@ Query parameters that accept multiple values **MUST** be pluralized.
 
 If any request receives a query parameter it does not understand, the response **MUST** be a `400 Bad Request`.
 
+All query parameters **MUST** be properly [url-encoded](https://en.wikipedia.org/wiki/Percent-encoding). If a query parameter value includes the comma (`,`) character, the comma **MUST** be double encoded. Note that for readability purposes, the examples throughout this document do not show encoded query strings.
+
 ####Example
 Single value:
 `GET /v3/apps?names=firstname`
 
 Multiple values:
  `GET /v3/apps?names=firstname,secondname`
+ 
+Single value with comma:
+ `GET /v3/apps?names=comma%2Cname`
 
 ## Field Names
 
