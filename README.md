@@ -802,21 +802,22 @@ GET /v3/apps/:guid?include=space,organization,organization.spaces
   "resource_field": "value",
 
   "included": {
-    "space": [
+    "spaces": [
       {
+      
+      ( this resource was also wanted by the organizations.spaces resource, but it was included once so we do not add it again)
         "guid": "some_space_guid",
         "name": "cool_space
-      }
-    ],
-    "organization": [
-      {
-      ( this resource also wanted the same subresource as above, but it was included once so we do not add it again)
-        "guid": "def",  
-        "name": "cool_organization",
       },
-      {
+            {
         "guid": "ght",
         "name": "not_as_cool_space",
+      },
+    ],
+    "organizations": [
+      {
+        "guid": "def",  
+        "name": "cool_organization",
       },
     ]
   }
