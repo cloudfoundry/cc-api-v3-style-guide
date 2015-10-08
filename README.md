@@ -831,31 +831,33 @@ GET /v3/apps/:guid?include=space,organization,organization.spaces
 }
 ```
 ###Pagination of Related Resources
-Related resources are paginated in a similar style to how normal responses are paginated.
+Related resources are paginated in a similar style to how normal responses are paginated.  
+The pagination data **may** be excluded if all results are included in the response.
 
-```
 GET /v3/apps/:guid?include=routes
 
+```json
 {
-  "guid": :guid,
+  "guid": "guid",
+  
   "included": {
-  "routes": {
-    "resources": [{"guid": 1}, {"guid": 2}],
-    "links": {
-      "related": "/v3/apps/guid/routes"
-    },
-    "pagination": {
-      "total_results": 20,
-      "first": {
-        "href": "/v3/apps/:guid/routes?order_by=-created_at&page=1&per_page=10"
-      },
-      "last": {
-        "href": "/v3/apps/:guid/routes?order_by=-created_at&page=2&per_page=10"
-      },
-      "next": {
-        "href": "/v3/apps/:guid/routes?order_by=-created_at&page=2&per_page=10"
-      },
-      "previous": null
+    "routes": {
+      "resources": [
+        {"guid": "1"},
+        {"guid": "2"}
+      ],
+      "pagination": {
+        "total_results": 20,
+        "first": {
+          "href": "/v3/apps/:guid/routes?order_by=-created_at&page=1&per_page=2"
+        },
+        "last": {
+          "href": "/v3/apps/:guid/routes?order_by=-created_at&page=10&per_page=2"
+        },
+        "next": {
+          "href": "/v3/apps/:guid/routes?order_by=-created_at&page=2&per_page=2"
+        },
+        "previous": null
       }
     }
   }
