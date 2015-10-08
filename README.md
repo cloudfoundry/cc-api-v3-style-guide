@@ -541,7 +541,7 @@ Query parameters that accept multiple values **MUST** be pluralized.
 
 If any request receives a query parameter it does not understand, the response **MUST** be a `400 Bad Request`.
 
-All query parameters **MUST** be properly [url-encoded](https://en.wikipedia.org/wiki/Percent-encoding). If a query parameter value includes the comma (`,`) character, the comma **MUST** be double encoded. Note that for readability purposes, the examples throughout this document do not show encoded query strings.
+All query parameters **MUST** be properly [url-encoded](https://en.wikipedia.org/wiki/Percent-encoding#Current_standard). If a query parameter value includes the comma (`,`) character, the comma **MUST** be double encoded. Note that for readability purposes, the examples throughout this document do not show encoded query strings.
 
 ####Example
 Single value:
