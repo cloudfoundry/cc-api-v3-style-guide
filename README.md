@@ -797,38 +797,230 @@ A use case for this would be to display an HTML page that includes information a
 
 ### Proposal
 
-Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated.
-
-**Question:** how do you tell which type of included resource goes with another resource (through a relationships object?)
+Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated. Associations between included resources and requested resources must be shown in the 'relationships' section for the requested resource. Duplicate included resources are not repeated
 
 ```
-GET /v3/apps/:guid?include=space,organization,organization.spaces
+GET /v3/apps/?include=space
 
 {
-  "guid": "xyz",
-  "resource_field": "value",
+  "pagination": {
+    "total_results": 3,
+    "first": {
+      "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
+    },
+    "last": {
+      "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
+    },
+    "next": {
+      "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
+    },
+    "previous": null
+  },
+  "resources": [
+    {
+      "guid": "643e170c-42cf-4704-840f-4fc22e95f3c5",
+      "name": "my_app3",
+      "desired_state": "STOPPED",
+      "total_desired_instances": 0,
+      "buildpack": "name-2009",
+      "created_at": "1970-01-01T00:00:03Z",
+      "updated_at": null,
+      "environment_variables": {
+        "magic": "beautiful"
+      },
+      "relationships": {
+        "space": {
+          "guid": "801d80bc-0314-48c0-bd7a-20cbb230c922"
+        }    
+      },
+      "links": {
+        "self": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5"
+        },
+        "space": {
+          "href": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922"
+        },
+        "processes": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/processes"
+        },
+        "routes": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/routes"
+        },
+        "packages": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/packages"
+        },
+        "droplets": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/droplets"
+        },
+        "start": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/start",
+          "method": "PUT"
+        },
+        "stop": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/stop",
+          "method": "PUT"
+        },
+        "assign_current_droplet": {
+          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/current_droplet",
+          "method": "PUT"
+        }
+      }
+    },
+    {
+      "guid": "3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef",
+      "name": "my_app2",
+      "desired_state": "STOPPED",
+      "total_desired_instances": 0,
+      "buildpack": null,
+      "created_at": "1970-01-01T00:00:02Z",
+      "updated_at": null,
+      "environment_variables": {
 
+      },
+      "relationships": {
+        "space": {
+          "guid": "8e63e218-9c12-460f-af57-f9c320657dad"
+        }    
+      },
+      "links": {
+        "self": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef"
+        },
+        "space": {
+          "href": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad"
+        },
+        "processes": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/processes"
+        },
+        "routes": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/routes"
+        },
+        "packages": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/packages"
+        },
+        "droplets": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/droplets"
+        },
+        "start": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/start",
+          "method": "PUT"
+        },
+        "stop": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/stop",
+          "method": "PUT"
+        },
+        "assign_current_droplet": {
+          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/current_droplet",
+          "method": "PUT"
+        }
+      }
+    },
+    {
+      "guid": "8c943e87-c00c-4d0b-8583-d5c49111a5ec",
+      "name": "my_app2",
+      "desired_state": "STOPPED",
+      "total_desired_instances": 0,
+      "buildpack": null,
+      "created_at": "1970-01-01T00:00:02Z",
+      "updated_at": null,
+      "environment_variables": {
+
+      },
+      "relationships": {
+        "space": {
+          "guid": "8e63e218-9c12-460f-af57-f9c320657dad"
+        }    
+      },
+      "links": {
+        "self": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec"
+        },
+        "space": {
+          "href": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad"
+        },
+        "processes": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/processes"
+        },
+        "routes": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/routes"
+        },
+        "packages": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/packages"
+        },
+        "droplets": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/droplets"
+        },
+        "start": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/start",
+          "method": "PUT"
+        },
+        "stop": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/stop",
+          "method": "PUT"
+        },
+        "assign_current_droplet": {
+          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/current_droplet",
+          "method": "PUT"
+        }
+      }
+    }
+  ],
   "included": {
     "spaces": [
       {
-      
-      ( this resource was also wanted by the organizations.spaces resource, but it was included once so we do not add it again)
-        "guid": "some_space_guid",
-        "name": "cool_space
+        "metadata": {
+          "guid": "8e63e218-9c12-460f-af57-f9c320657dad",
+          "url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad",
+          "created_at": "2015-10-07T00:35:20Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "name-76",
+          "organization_guid": "b35e1b19-8031-4278-86af-45dd74c58271",
+          "space_quota_definition_guid": null,
+          "allow_ssh": true,
+          "organization_url": "/v2/organizations/b35e1b19-8031-4278-86af-45dd74c58271",
+          "developers_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/developers",
+          "managers_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/managers",
+          "auditors_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/auditors",
+          "apps_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/apps",
+          "routes_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/routes",
+          "domains_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/domains",
+          "service_instances_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/service_instances",
+          "app_events_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/app_events",
+          "events_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/events",
+          "security_groups_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/security_groups" 
+        }
       },
-            {
-        "guid": "ght",
-        "name": "not_as_cool_space",
-      },
-    ],
-    "organizations": [
       {
-        "guid": "def",  
-        "name": "cool_organization",
-      },
+        "metadata": {
+          "guid": "801d80bc-0314-48c0-bd7a-20cbb230c922",
+          "url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922",
+          "created_at": "2015-10-07T00:35:20Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "name-77",
+          "organization_guid": "b35e1b19-8031-4278-86af-45dd74c58271",
+          "space_quota_definition_guid": null,
+          "allow_ssh": true,
+          "organization_url": "/v2/organizations/b35e1b19-8031-4278-86af-45dd74c58271",
+          "developers_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/developers",
+          "managers_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/managers",
+          "auditors_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/auditors",
+          "apps_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/apps",
+          "routes_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/routes",
+          "domains_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/domains",
+          "service_instances_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/service_instances",
+          "app_events_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/app_events",
+          "events_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/events",
+          "security_groups_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/security_groups" 
+        }
+      }
     ]
   }
 }
+
 ```
 ###Pagination of Related Resources
 Related resources are paginated in a similar style to how normal responses are paginated.  
