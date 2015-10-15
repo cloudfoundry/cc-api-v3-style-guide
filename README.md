@@ -800,7 +800,7 @@ A use case for this would be to display an HTML page that includes information a
 Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated. Associations between included resources and requested resources must be shown in the 'relationships' section for the requested resource. Duplicate included resources are not repeated
 
 ```
-GET /v3/apps/?include=space
+GET /v3/apps?include=space,space.organization,space.space_quota
 
 {
   "pagination": {
@@ -830,7 +830,7 @@ GET /v3/apps/?include=space
       },
       "relationships": {
         "space": {
-          "guid": "801d80bc-0314-48c0-bd7a-20cbb230c922"
+          "guid": "space2-guid"
         }    
       },
       "links": {
@@ -838,7 +838,7 @@ GET /v3/apps/?include=space
           "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5"
         },
         "space": {
-          "href": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922"
+          "href": "/v2/spaces/space2-guid"
         },
         "processes": {
           "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/processes"
@@ -879,7 +879,7 @@ GET /v3/apps/?include=space
       },
       "relationships": {
         "space": {
-          "guid": "8e63e218-9c12-460f-af57-f9c320657dad"
+          "guid": "space1-guid"
         }    
       },
       "links": {
@@ -887,7 +887,7 @@ GET /v3/apps/?include=space
           "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef"
         },
         "space": {
-          "href": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad"
+          "href": "/v2/spaces/space1-guid"
         },
         "processes": {
           "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/processes"
@@ -928,7 +928,7 @@ GET /v3/apps/?include=space
       },
       "relationships": {
         "space": {
-          "guid": "8e63e218-9c12-460f-af57-f9c320657dad"
+          "guid": "space1-guid"
         }    
       },
       "links": {
@@ -936,7 +936,7 @@ GET /v3/apps/?include=space
           "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec"
         },
         "space": {
-          "href": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad"
+          "href": "/v2/spaces/space1-guid"
         },
         "processes": {
           "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/processes"
@@ -969,54 +969,154 @@ GET /v3/apps/?include=space
     "spaces": [
       {
         "metadata": {
-          "guid": "8e63e218-9c12-460f-af57-f9c320657dad",
-          "url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad",
+          "guid": "space1-guid",
+          "url": "/v2/spaces/space1-guid",
           "created_at": "2015-10-07T00:35:20Z",
           "updated_at": null
         },
+        "relationships": {
+          "organization": {"guid": "org1-guid"},
+          "space_quota_definition": {"guid": "spacequota1-guid}
+        },
         "entity": {
           "name": "name-76",
-          "organization_guid": "b35e1b19-8031-4278-86af-45dd74c58271",
-          "space_quota_definition_guid": null,
+          "organization_guid": "org1-guid",
+          "space_quota_definition_guid": "spacequota1-guid",
           "allow_ssh": true,
-          "organization_url": "/v2/organizations/b35e1b19-8031-4278-86af-45dd74c58271",
-          "developers_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/developers",
-          "managers_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/managers",
-          "auditors_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/auditors",
-          "apps_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/apps",
-          "routes_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/routes",
-          "domains_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/domains",
-          "service_instances_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/service_instances",
-          "app_events_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/app_events",
-          "events_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/events",
-          "security_groups_url": "/v2/spaces/8e63e218-9c12-460f-af57-f9c320657dad/security_groups" 
+          "organization_url": "/v2/organizations/org1-guid",
+          "developers_url": "/v2/spaces/space1-guid/developers",
+          "managers_url": "/v2/spaces/space1-guid/managers",
+          "auditors_url": "/v2/spaces/space1-guid/auditors",
+          "apps_url": "/v2/spaces/space1-guid/apps",
+          "routes_url": "/v2/spaces/space1-guid/routes",
+          "domains_url": "/v2/spaces/space1-guid/domains",
+          "service_instances_url": "/v2/spaces/space1-guid/service_instances",
+          "app_events_url": "/v2/spaces/space1-guid/app_events",
+          "events_url": "/v2/spaces/space1-guid/events",
+          "security_groups_url": "/v2/spaces/space1-guid/security_groups" 
         }
       },
       {
         "metadata": {
-          "guid": "801d80bc-0314-48c0-bd7a-20cbb230c922",
-          "url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922",
+          "guid": "space2-guid",
+          "url": "/v2/spaces/space2-guid",
           "created_at": "2015-10-07T00:35:20Z",
           "updated_at": null
         },
+        "relationships": {
+          "organization": {"guid": "org2-guid"}
+          "space_quota_definition": {"guid": "spacequota1-guid}
+        },
         "entity": {
           "name": "name-77",
-          "organization_guid": "b35e1b19-8031-4278-86af-45dd74c58271",
-          "space_quota_definition_guid": null,
+          "organization_guid": "org2-guid",
+          "space_quota_definition_guid": "spacequota1-guid",
           "allow_ssh": true,
-          "organization_url": "/v2/organizations/b35e1b19-8031-4278-86af-45dd74c58271",
-          "developers_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/developers",
-          "managers_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/managers",
-          "auditors_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/auditors",
-          "apps_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/apps",
-          "routes_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/routes",
-          "domains_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/domains",
-          "service_instances_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/service_instances",
-          "app_events_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/app_events",
-          "events_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/events",
-          "security_groups_url": "/v2/spaces/801d80bc-0314-48c0-bd7a-20cbb230c922/security_groups" 
+          "organization_url": "/v2/organizations/org2-guid",
+          "developers_url": "/v2/spaces/space2-guid/developers",
+          "managers_url": "/v2/spaces/space2-guid/managers",
+          "auditors_url": "/v2/spaces/space2-guid/auditors",
+          "apps_url": "/v2/spaces/space2-guid/apps",
+          "routes_url": "/v2/spaces/space2-guid/routes",
+          "domains_url": "/v2/spaces/space2-guid/domains",
+          "service_instances_url": "/v2/spaces/space2-guid/service_instances",
+          "app_events_url": "/v2/spaces/space2-guid/app_events",
+          "events_url": "/v2/spaces/space2-guid/events",
+          "security_groups_url": "/v2/spaces/space2-guid/security_groups" 
         }
       }
+    ],
+    "organizations": [
+      {
+        "metadata": {
+          "guid": "org1-guid",
+          "url": "/v2/organizations/org1-guid",
+          "created_at": "2015-10-13T17:31:34Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "org1",
+          "billing_enabled": false,
+          "quota_definition_guid": "dad3cc94-2ec9-4178-b6af-0c7819812e1c",
+          "status": "active",
+          "quota_definition_url": "/v2/quota_definitions/dad3cc94-2ec9-4178-b6af-0c7819812e1c",
+          "spaces_url": "/v2/organizations/org1-guid/spaces",
+          "domains_url": "/v2/organizations/org1-guid/domains",
+          "private_domains_url": "/v2/organizations/org1-guid/private_domains",
+          "users_url": "/v2/organizations/org1-guid/users",
+          "managers_url": "/v2/organizations/org1-guid/managers",
+          "billing_managers_url": "/v2/organizations/org1-guid/billing_managers",
+          "auditors_url": "/v2/organizations/org1-guid/auditors",
+          "app_events_url": "/v2/organizations/org1-guid/app_events",
+          "space_quota_definitions_url": "/v2/organizations/org1-guid/space_quota_definitions"
+        }
+      } ,
+      {
+        "metadata": {
+          "guid": "org2-guid",
+          "url": "/v2/organizations/org2-guid",
+          "created_at": "2015-10-13T17:38:34Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "org2",
+          "billing_enabled": false,
+          "quota_definition_guid": "dad3cc94-2ec9-4178-b6af-0c7819812e1c",
+          "status": "active",
+          "quota_definition_url": "/v2/quota_definitions/dad3cc94-2ec9-4178-b6af-0c7819812e1c",
+          "spaces_url": "/v2/organizations/org2-guid/spaces",
+          "domains_url": "/v2/organizations/org2-guid/domains",
+          "private_domains_url": "/v2/organizations/org2-guid/private_domains",
+          "users_url": "/v2/organizations/org2-guid/users",
+          "managers_url": "/v2/organizations/org2-guid/managers",
+          "billing_managers_url": "/v2/organizations/org2-guid/billing_managers",
+          "auditors_url": "/v2/organizations/org2-guid/auditors",
+          "app_events_url": "/v2/organizations/org2-guid/app_events",
+          "space_quota_definitions_url": "/v2/organizations/org2-guid/space_quota_definitions"
+        }
+      } 
+    ],
+    "space_quota_definitions": [
+      {
+        "metadata": {
+          "guid": "spacequota1-guid",
+          "url": "/v2/space_quota_definitions/spacequota1_guid",
+          "created_at": "2015-10-13T17:31:39Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "spacequota1",
+          "organization_guid": "org1-guid",
+          "non_basic_services_allowed": true,
+          "total_services": 60,
+          "total_routes": 1000,
+          "memory_limit": 20480,
+          "instance_memory_limit": -1,
+          "app_instance_limit": -1,
+          "organization_url": "/v2/organizations/org1-guid",
+          "spaces_url": "/v2/space_quota_definitions/spacequota1-guid/spaces"
+        }     
+      },
+      {
+        "metadata": {
+          "guid": "spacequota2-guid",
+          "url": "/v2/space_quota_definitions/spacequota2_guid",
+          "created_at": "2015-10-13T17:31:39Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "spacequota2",
+          "organization_guid": "org2-guid",
+          "non_basic_services_allowed": true,
+          "total_services": 60,
+          "total_routes": 1000,
+          "memory_limit": 20480,
+          "instance_memory_limit": -1,
+          "app_instance_limit": -1,
+          "organization_url": "/v2/organizations/org2-guid",
+          "spaces_url": "/v2/space_quota_definitions/spacequota2-guid/spaces"
+        }     
+      },
     ]
   }
 }
