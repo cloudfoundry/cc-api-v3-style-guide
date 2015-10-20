@@ -800,7 +800,7 @@ A use case for this would be to display an HTML page that includes information a
 Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated. Associations between included resources and requested resources must be shown in the 'relationships' section for the requested resource. Duplicate included resources are not repeated
 
 ```
-GET /v3/apps?include=space,space.organization,space.space_quota
+GET /v3/apps?include=space,space.organization,space.space_quota_definition,space.organization.quota_definition
 
 {
   "pagination": {
@@ -1004,7 +1004,7 @@ GET /v3/apps?include=space,space.organization,space.space_quota
           "updated_at": null
         },
         "relationships": {
-          "organization": {"guid": "org2-guid"}
+          "organization": {"guid": "org2-guid"},
           "space_quota_definition": {"guid": "spacequota1-guid}
         },
         "entity": {
@@ -1034,6 +1034,9 @@ GET /v3/apps?include=space,space.organization,space.space_quota
           "created_at": "2015-10-13T17:31:34Z",
           "updated_at": null
         },
+        "relationships": {
+          "quota_definition": {"guid": "quota1-guid"}
+        },
         "entity": {
           "name": "org1",
           "billing_enabled": false,
@@ -1058,6 +1061,9 @@ GET /v3/apps?include=space,space.organization,space.space_quota
           "created_at": "2015-10-13T17:38:34Z",
           "updated_at": null
         },
+        "relationships": {
+          "quota_definition": {"guid": "quota2-guid"}
+        },
         "entity": {
           "name": "org2",
           "billing_enabled": false,
@@ -1075,6 +1081,46 @@ GET /v3/apps?include=space,space.organization,space.space_quota
           "space_quota_definitions_url": "/v2/organizations/org2-guid/space_quota_definitions"
         }
       } 
+    ],
+    "quota_definitions": [
+      {
+        "metadata": {
+          "guid": "quota1-guid",
+          "url": "/v2/quota_definitions/quota1-guid",
+          "created_at": "2015-10-13T17:31:34Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "default",
+          "non_basic_services_allowed": true,
+          "total_services": 100,
+          "total_routes": 1000,
+          "total_private_domains": -1,
+          "memory_limit": 10240,
+          "trial_db_allowed": false,
+          "instance_memory_limit": -1,
+          "app_instance_limit": -1
+        }
+      },
+      {
+        "metadata": {
+          "guid": "quota2-guid",
+          "url": "/v2/quota_definitions/quota2-guid",
+          "created_at": "2015-10-13T17:31:34Z",
+          "updated_at": null
+        },
+        "entity": {
+          "name": "basic",
+          "non_basic_services_allowed": false,
+          "total_services": 100,
+          "total_routes": 1000,
+          "total_private_domains": 10,
+          "memory_limit": 10240,
+          "trial_db_allowed": false,
+          "instance_memory_limit": 2048,
+          "app_instance_limit": 50
+        }
+      }
     ],
     "space_quota_definitions": [
       {
