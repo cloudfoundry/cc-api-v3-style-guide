@@ -666,7 +666,7 @@ This proposal includes `code` which would be an internal unique identifier of a 
 |Status Code|Description|Verbs|
 |---|---|---|
 |302 Found| This status **MUST** be returned when the cloud controller redirects to another location. Example: Downloading a package from an external blob store.  |GET|
-|303 See Other| This status **MUST** be returned when an async job finishes. It must include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET|
+|[303 See Other](https://tools.ietf.org/html/rfc7231#section-6.4.4)| This status **MUST** be returned when an async job finishes. It must include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET|
 
 
 ### Client Errors
