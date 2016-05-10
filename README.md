@@ -95,7 +95,7 @@ This is a living document; It will change over time as we learn more about our u
 Here is an example request to get apps filtered by query parameters:
 
 ```
-GET /v3/apps?names=dora,kailan&order_by=+created_at&page=1&per_page=2
+GET /v3/apps?names=dora,kailan&order_by=created_at&page=1&per_page=2
 ```
 
 Note that the examples in the style guide to not encode query strings. This is to make the examples more human-readable. In actuality, all requests and responses must contain correctly encoded characters. For more information see [Query Parameters](#query-parameters).
@@ -107,13 +107,13 @@ Here is the respective response body:
   "pagination": {
     "total_results": 3,
     "first": {
-      "href": "/v3/apps?names=dora,kailan&order_by=+created_at&page=1&per_page=2"
+      "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=1&per_page=2"
     },
     "last": {
-      "href": "/v3/apps?names=dora,kailan&order_by=+created_at&page=2&per_page=2"
+      "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=2&per_page=2"
     },
     "next": {
-      "href": "/v3/apps?names=dora,kailan&order_by=+created_at&page=2&per_page=2"
+      "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=2&per_page=2"
     },
     "previous": null
   },
@@ -495,7 +495,7 @@ The following query parameters **MUST** be used for pagination:
 * `per_page`: the number of resources to return in a paginated collection request (default: 50)
 * `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by 
 
-When collections are ordered by a subset of fields, each field **MAY** be prepended by "+" or "-" to indicate ascending or descending order direction respectively. If the field is not prepended, the ordering will default to ascending.
+When collections are ordered by a subset of fields, each field **MAY** be prepended "-" to indicate descending order direction. If the field is not prepended, the ordering will default to ascending.
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
