@@ -106,6 +106,7 @@ Here is the respective response body:
 {
   "pagination": {
     "total_results": 3,
+    "total_pages": 2,
     "first": {
       "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=1&per_page=2"
     },
@@ -458,6 +459,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
   ],
   "pagination": {
     "total_results": 2,
+    "total_pages": 1,
     "first": {
       "href": "/v3/apps?page=1&per_page=10"
     },
@@ -475,6 +477,8 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 Pagination **may** be used by [Collections](#collections) to limit the number of resources returned at a time.  Pagination is requested by a client through the use of query parameters. Pagination is represented as a JSON object.
 
 Pagination **MUST** include a `total_results` field with an integer value of the total number of records in the collection.
+
+Pagination **MUST** include a `total_pages` field with an integer value of the total number of pages in the collection.
 
 Pagination **MUST** include the following fields for pagination links:
 
@@ -504,6 +508,7 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 ```json
 "pagination:" {
   "total_results": 20,
+  "total_pages": 2,
   "first": {
     "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
   },
@@ -805,6 +810,7 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
 {
   "pagination": {
     "total_results": 3,
+    "total_pages": 1,
     "first": {
       "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
     },
@@ -1186,6 +1192,7 @@ GET /v3/apps/:guid?include=routes
       ],
       "pagination": {
         "total_results": 20,
+        "total_pages": 2,
         "first": {
           "href": "/v3/apps/:guid/routes?order_by=-created_at&page=1&per_page=2"
         },
