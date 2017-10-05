@@ -1,5 +1,5 @@
 
-#Cloud Controller API v3 Style Guide (Proposal)
+# Cloud Controller API v3 Style Guide (Proposal)
 
 ## Table of contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -548,7 +548,7 @@ If any request receives a query parameter it does not understand, the response *
 
 All query parameters **MUST** be properly [url-encoded](https://en.wikipedia.org/wiki/Percent-encoding#Current_standard). If a query parameter value includes the comma (`,`) character, the comma **MUST** be double encoded. Note that for readability purposes, the examples throughout this document do not show encoded query strings.
 
-####Example
+#### Example
 Single value:
 `GET /v3/apps?names=firstname`
 
@@ -567,7 +567,7 @@ Resource Fields **MUST** include **ONLY** the following characters:
 
 Resource fields that accept multiple values **MUST** be pluralized.
 
-####Example:
+#### Example:
 ```json
 {
   "resources": [
