@@ -1,5 +1,5 @@
 
-# Cloud Controller API v3 Style Guide (Proposal)
+# Cloud Controller API v3 Style Guide
 
 ## Table of contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -84,7 +84,7 @@ This is a living document; It will change over time as we learn more about our u
 
 ### API Technologies
 * **HTTP:** All API requests must be made over HTTP.
-* **JSON:** All API response bodies will be JSON objects.
+* **JSON & YAML:** All API response bodies will be JSON or YAML objects (depending on the endpoint).
 
 ### API Design Inspirations
 * **REST:**  https://en.wikipedia.org/wiki/Representational_state_transfer
@@ -256,7 +256,7 @@ GET /v3/apps/
 | User With No Visibility | 200 | Empty List |
 
 ### POST
-Used to create a resource.
+Used to create a resource or trigger an [action](#actions).
 
 * POST requests **must NOT** include query parameters
 * POST requests **may** include a request body
@@ -274,25 +274,10 @@ POST /v3/apps/
 }
 ```
 
-##### Responses
-|Scenario|Code(s)|Body|
-|---|---|---|
-| Authorized User (sync) | 201 | Created Resource |
-| Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
-| Read-only User | 403 | Error |
-| Unauthorized User | 403 | Error |
-
-### PUT
-Used to trigger an [action](#actions). To update a resource, use [PATCH](#patch)
-
-* PUT requests **must NOT** include query parameters
-* PUT requests **may** include a request body
-
-#### Examples
 Trigger an action:
 
 ```
-PUT /v3/apps/:guid/processes/web/scale
+PUT /v3/processes/:guid/scale
 
 {
   "instances": 100,
@@ -303,10 +288,13 @@ PUT /v3/apps/:guid/processes/web/scale
 ##### Responses
 |Scenario|Code(s)|Body|
 |---|---|---|
-| Authorized User (sync) | 200 | Empty |
+| Authorized User (sync) | 201 | Created Resource |
 | Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
-| Unauthorized User | 404 | Error |
+| Unauthorized User | 403 | Error |
+
+### PUT
+Not used. To update a resource, use [PATCH](#patch)
 
 ### PATCH
 Used to update a portion of a resource.
@@ -526,7 +514,7 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 
 Actions are API requests that are expected to initiate change within the Cloud Foundry runtime.  This is differentiated from requests which update a record, but require additional updates — such as restarting an app — to cause changes to a resource to take affect.  
 
-Actions **MUST** use use PUT as their HTTP verb.
+Actions **MUST** use use POST as their HTTP verb.
 
 Actions **may** accept a request body.
 
@@ -534,6 +522,14 @@ Actions **MUST** be listed in the `links` for the related resource.
 
 ### Example
  `PUT /v3/apps/:guid/start`
+ 
+## Pseudo-Resources
+
+Pseudo-Resources are API endpoints that are nested under other resources and do not have a unique identifier. Their lifecycles are tied directly to their parent resource. They may, however, require different permissions to operate on than their parent resource.
+
+### Example
+
+`GET /v3/apps/:guid/environment_variables`
 
 ## Query Parameters
 
