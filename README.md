@@ -78,9 +78,10 @@ This is a living document; It will change over time as we learn more about our u
 
 ### Guiding Principles
 
-* **Consistency**: Understanding how to interact with one resource must inform how to interact with any resource.
-* **Discoverability**: API responses must guide users without the need for external documentation.
-* **Opinionatedness**: There must be one clear way to do something.
+* **Consistency**: Understanding how to interact with one resource informs how to interact with any resource.
+* **Discoverability**: API responses guide users without the need for external documentation.
+* **Simplicity**: Complex user workflows are constructed from smaller, easier to understand parts.
+* **Opinionatedness**: There is one clear way to do something.
 
 ### API Technologies
 * **HTTP:** All API requests must be made over HTTP.
