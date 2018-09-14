@@ -1,4 +1,5 @@
 
+
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -266,18 +267,18 @@ Used to create a resource or trigger an [action](#actions).
 
 Create a resource:
 
-```
+```json
 POST /v3/apps/
 
 {
-  name: "cool_app",
-  space_guid: "123guid"
+  "name": "cool_app",
+  "space_guid": "123guid"
 }
 ```
 
 Trigger an action:
 
-```
+```json
 PUT /v3/processes/:guid/scale
 
 {
@@ -307,7 +308,7 @@ Used to update a portion of a resource.
 #### Examples
 Partially update a resource:
 
-```
+```json
 PATCH /v3/apps/:guid
 
 {
@@ -610,7 +611,7 @@ The HTTP status code returned for errors **MUST** be included in the documented 
 ### Issues with v2 error format
 Currently looks like v2.
 
-```
+```json
 {
    "code": 100001,
    "description": "The app is invalid: Invalid app state provided",
@@ -683,8 +684,8 @@ This proposal includes `code` which would be an internal unique identifier of a 
 
 ### Server Errors
 
-|Status Code|Description
-|---|---|---|
+|Status Code|Description|
+|---|---|
 |500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
 |502 Bad Gateway|This status **MUST** be returned when an upstream service failure causes a request to fail. Example: Being unable to reach requested service broker.
 
@@ -713,7 +714,7 @@ Add a relationship object to resources similar to the jsonapi spec.
 
 Creating an app could change to allow creating relationships at create time by including the relationships object.  Some relationships could be required at creation such as space in the app case.
 
-```
+```json
 POST /v3/apps
 {
   "name": "blah",
@@ -730,7 +731,7 @@ POST /v3/apps
 Modifying relationships later could be done through a nested relationship resource
 
 Setting a \*-to-one relationship:
-```
+```json
 PATCH /v3/apps/guid/relationships/space
 {
   "data": {"guid": "some-guid"}
@@ -738,7 +739,7 @@ PATCH /v3/apps/guid/relationships/space
 ```
 
 Clearing a \*-to-one relationship:
-```
+```json
 PATCH /v3/apps/guid/relationships/space
 {
   "data": null
@@ -746,7 +747,7 @@ PATCH /v3/apps/guid/relationships/space
 ```
 
 Adding to a \*-to-many relationship (not an overwrite/replace):
-```
+```json
 POST /v3/apps/guid/relationships/routes
 {
   "data": [{"guid": "asdf" }, {"guid": "gfds" }]
@@ -754,7 +755,7 @@ POST /v3/apps/guid/relationships/routes
 ```
 
 Replacing all items in a \*-to-many relationship:
-```
+```json
 PATCH /v3/apps/guid/relationships/routes
 {
   "data": [{"guid": "some-guid" }, {"guid": "whatever" }]
@@ -762,7 +763,7 @@ PATCH /v3/apps/guid/relationships/routes
 ```
 
 Clearing all items in a \*-to-many relationship:
-```
+```json
 PATCH /v3/apps/guid/relationships/routes
 {
   "data": []
@@ -770,7 +771,7 @@ PATCH /v3/apps/guid/relationships/routes
 ```
 
 Removing some items from a \*-to-many relationship:
-```
+```json
 DELETE /v3/apps/guid/relationships/routes
 {
   "data": [{"guid": "asdf" }, {"guid": "hgfg" }]
@@ -801,7 +802,7 @@ A use case for this would be to display an HTML page that includes information a
 
 Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated. Associations between included resources and requested resources must be shown in the 'relationships' section for the requested resource. Duplicate included resources are not repeated
 
-```
+```json
 GET /v3/apps?include=space,space.organization,space.space_quota_definition,space.organization.quota_definition
 
 {
@@ -979,7 +980,7 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
         },
         "relationships": {
           "organization": {"guid": "org1-guid"},
-          "space_quota_definition": {"guid": "spacequota1-guid}
+          "space_quota_definition": {"guid": "spacequota1-guid"}
         },
         "entity": {
           "name": "name-76",
@@ -1008,7 +1009,7 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
         },
         "relationships": {
           "organization": {"guid": "org2-guid"},
-          "space_quota_definition": {"guid": "spacequota1-guid}
+          "space_quota_definition": {"guid": "spacequota1-guid"}
         },
         "entity": {
           "name": "name-77",
@@ -1171,11 +1172,12 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
 }
 
 ```
-###Pagination of Related Resources
+### Pagination of Related Resources
+
 Related resources are paginated in a similar style to how normal responses are paginated.  
 The pagination data **may** be excluded if all results are included in the response.
 
-GET /v3/apps/:guid?include=routes
+`GET /v3/apps/:guid?include=routes`
 
 ```json
 {
@@ -1207,7 +1209,7 @@ GET /v3/apps/:guid?include=routes
 ```
 ## Requesting Partial Resources
 
-```
+```json
 GET /apps?fields=guid,name
 
 {
@@ -1219,7 +1221,7 @@ GET /apps?fields=guid,name
 ### Proposal For Sub-Resources
 
 If we want to be able to filter the fields of subresources, we could do something like:
-```
+```json
 GET /apps?fields[apps]=guid,name&fields[droplets]=buildpack
 
 {
@@ -1264,7 +1266,7 @@ For async endpoints:
 `POST /v3/resource`
 
 The CC will return a 202 with a location header pointing to the job. Depending on the resource, it may also return a skeletal body containing the partial resource.
-```
+```json
 202 Accepted
 Location: /v3/jobs/123
 
@@ -1277,7 +1279,7 @@ Before the job has completed,  GET requests made to the job endpoint will return
 ```
 GET /v3/jobs/123
 ```
-```
+```json
 200 OK
 
 {
@@ -1289,7 +1291,7 @@ When the job has completed, GET request made to the job endpoint will return 303
 ```
 GET /v3/jobs/123
 ```
-```
+```json
 303 See Other
 Location: /v3/resource/:guid
 
