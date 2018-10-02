@@ -25,9 +25,12 @@
   - [PATCH](#patch)
     - [Examples](#examples-2)
       - [Responses](#responses-1)
-  - [DELETE](#delete)
+  - [DELETE](#deletePATCH](#patch)
     - [Examples](#examples-3)
       - [Responses](#responses-2)
+  - [DELETE](#delete)
+    - [Examples](#examples-4)
+      - [Responses](#responses-3)
 - [Resources](#resources)
   - [Example](#example)
 - [Links](#links)
@@ -41,9 +44,9 @@
 - [Pseudo-Resources](#pseudo-resources)
   - [Example](#example-5)
 - [Query Parameters](#query-parameters)
-    - [Example](#example-6)
+    - [Example](#example-65)
 - [Field Names](#field-names)
-    - [Example:](#example)
+    - [Example:](#example-6)
 - [Filtering](#filtering)
     - [Example multiple value request](#example-multiple-value-request)
     - [Example single value request](#example-single-value-request)
@@ -1299,3 +1302,6 @@ Location: /v3/resource/:guid
 ```
 
 Note that for asynchronous deletes, the redirect location will be to a no-longer-existent resource.
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbNTg0NTUzMTk2XX0=
+-->
