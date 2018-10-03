@@ -1,6 +1,3 @@
-
-
-
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -74,7 +71,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
-This document serves as a style guide for the Cloud Controller API. It is intended to act as a repository for patterns and best practices when designing and developing new API endpoints.
+This document serves as a style guide for version 3 of the Cloud Controller API. It is intended to act as a repository for patterns and best practices when designing and developing new API endpoints.
 
 This is a living document; It will change over time as we learn more about our users and develop features.
 
@@ -200,25 +197,25 @@ Here is the respective response body:
 
 ### URL structure
 
-All endpoints must be prefixed with /v3/.
+All endpoints must be prefixed with `/v3/`.
 Pattern: `/v3/...`  
 
 Collections of resources are referenced by their resource name (plural)  
 Pattern: `/v3/:resource name`  
 Example: `/v3/apps`  
 
-Individual resources are referenced their resource name (plural) followed by the guid  
+Individual resources are referenced by their resource name (plural) followed by the guid  
 Pattern: `/v3/:resource name/:guid`  
 Example:  `/v3/apps/25fe21b8-8de2-40d0-93b0-c819101d1a11`  
 
 ### GET
-Used to retrieve a single resource or a list of resources.
+Retrieve a single resource or a list of resources. **Must** be idempotent.
 
 * GET requests **may** include query parameters
 * GET requests **must NOT** include a request body
 
 #### Examples
-Show individual resource:
+**Show individual resource:**
 ```
 GET /v3/apps/:guid
 ```
@@ -229,7 +226,7 @@ GET /v3/apps/:guid
 | Authorized User | 200 | Resource |
 | Unauthorized User | 404 | Error |
 
-List collection of resources:
+**List collection of resources:**
 ```
 GET /v3/apps/
 ```
@@ -248,7 +245,7 @@ Used to create a resource or trigger an [action](#actions).
 
 #### Examples
 
-Create a resource:
+**Create a resource:**
 
 ```json
 POST /v3/apps/
@@ -259,10 +256,10 @@ POST /v3/apps/
 }
 ```
 
-Trigger an action:
+**Trigger an action:**
 
 ```json
-PUT /v3/processes/:guid/scale
+POST /v3/processes/:guid/scale
 
 {
   "instances": 100,
@@ -273,7 +270,8 @@ PUT /v3/processes/:guid/scale
 ##### Responses
 |Scenario|Code(s)|Body|
 |---|---|---|
-| Authorized User (sync) | 201 | Created Resource |
+| Authorized User (sync action) | 200 | Created Resource |
+| Authorized User (sync create) | 201 | Created Resource |
 | Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
 | Unauthorized User | 403 | Error |
