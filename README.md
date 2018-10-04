@@ -1,3 +1,5 @@
+
+
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -28,24 +30,22 @@
       - [Responses](#responses-2)
 - [Resources](#resources)
   - [Example](#example)
-- [Links](#links)
-  - [Example](#example-1)
-- [Collections](#collections)
-  - [Example](#example-2)
-- [Pagination](#pagination)
-  - [Example](#example-3)
-- [Actions](#actions)
-  - [Example](#example-4)
 - [Pseudo-Resources](#pseudo-resources)
-  - [Example](#example-5)
-- [Query Parameters](#query-parameters)
-    - [Example](#example-6)
+  - [Example](#example-1)
+- [Actions](#actions)
+  - [Example](#example-2)
 - [Field Names](#field-names)
     - [Example:](#example)
+- [Links](#links)
+  - [Example](#example-3)
+- [Collections](#collections)
+  - [Example](#example-4)
+- [Pagination](#pagination)
+  - [Example](#example-5)
+- [Query Parameters](#query-parameters)
+    - [Examples](#examples-4)
 - [Filtering](#filtering)
-    - [Example multiple value request](#example-multiple-value-request)
-    - [Example single value request](#example-single-value-request)
-    - [Example combined filters](#example-combined-filters)
+    - [Examples](#examples-5)
 - [Errors](#errors)
   - [Status Codes](#status-codes)
   - [Issues with v2 error format](#issues-with-v2-error-format)
@@ -270,7 +270,7 @@ POST /v3/processes/:guid/scale
 ##### Responses
 |Scenario|Code(s)|Body|
 |---|---|---|
-| Authorized User (sync action) | 200 | Created Resource |
+| Authorized User (sync action) | 200 | Resource |
 | Authorized User (sync create) | 201 | Created Resource |
 | Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
@@ -304,6 +304,7 @@ PATCH /v3/apps/:guid
 | Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
 | Read-only User | 403 | Error |
 | Unauthorized User | 404 | Error |
+| Missing Resource | 404 | Error |
 
 ### DELETE
 Used to delete a resource.
@@ -321,11 +322,11 @@ DELETE /v3/apps/:guid
 ##### Responses
 |Scenario|Code(s)|Body|
 |---|---|---|
-| Authorized User (sync) | 204 | N/A |
 | Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
+| Authorized User (sync) | 204 | N/A |
+| Missing Resource | 204 | N/A |
 | Read-only User | 403 | Error |
 | Unauthorized User | 404 | Error |
-| Missing Resource | 404 | Error |
 
 ## Resources
 
@@ -333,13 +334,13 @@ A resource represents an individual object within the system, such as an app or 
 
 A resource **MUST** contain the following fields:
 
-* `guid`: a unique identifier for the resource
+* `guid`: a [universally unique identifier](https://www.itu.int/en/ITU-T/asn1/Pages/UUID/uuids.aspx) for the resource
 * `created_at`: an ISO8601 compatible date and time that the resource was created
 * `updated_at`: an ISO8601 compatible date and time that the resource was last updated
 
 A resource **may** contain additional fields which are the attributes describing the resource.
 
-A resource **MUST** contain a `links` field containing a [links](#links) object, which is used to provide URLs to relationships and actions for the resource.
+A resource **MUST** contain a `links` field containing a [links](#links) object, which is used to provide URLs to associated resources, relationships, and actions for the resource.
 
 A resource **MUST** include a `self` link object in the `links` field.
 
@@ -347,7 +348,7 @@ A resource **MUST** include a `self` link object in the `links` field.
 
 ```json
 {
-  "guid": "a-b-c",
+  "guid": "00112233-4455-6677-8899-aabbccddeeff",
   "created_at": "2015-07-06T23:22:56Z",
   "updated_at": "2015-07-08T23:22:56Z",
 
@@ -356,42 +357,85 @@ A resource **MUST** include a `self` link object in the `links` field.
 
   "links": {
     "self": {
-      "href": "/v3/apps/a-b-c"
+      "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff"
     }
   }
 }
 ```
 
+## Pseudo-Resources
+
+Pseudo-Resources are API endpoints that are nested under other resources and do not have a unique identifier. Their lifecycles are tied directly to their parent resource. They may, however, require different permissions to operate on than their parent resource.
+
+### Example
+
+`GET /v3/apps/:guid/environment_variables`
+
+
+## Actions
+
+Actions are API requests that are expected to initiate change within the Cloud Foundry runtime.  This is differentiated from requests which update a record, but require additional updates — such as restarting an app — to cause changes to a resource to take affect.  
+
+Actions **MUST** use use POST as their HTTP verb.
+
+Actions **may** accept a request body.
+
+Actions **MUST** be listed in the `links` for the related resource.
+
+### Example
+ `POST /v3/apps/:guid/start`
+ 
+
+## Field Names
+
+Resource Fields **MUST** include **ONLY** the following characters:
+
+* a-z (lowercase only)
+* _ (underscore)
+
+Resource fields that accept multiple values **MUST** be pluralized.
+
+#### Example:
+```json
+
+{
+  "guid": "guid-1",
+  "color": "red",
+  "animals": [
+    "fish",
+    "lion"
+  ]
+}
+```
+
 ## Links
 
-Links provide URLs to relationships and actions for a resource.  Links are represented as a JSON object.
+Links provide URLs to associated resources, relationships, and actions for a resource.  Links are represented as a JSON object.
 
 Each member of a links object is a "link".  
 A link **MUST** be a JSON object.
 A link **MUST** contain a `href` field, which is a string containing the link's relative URL.
-A link **may** contain a `method` field, which is a string containing the HTTP verb that must be used to follow the URL.  If the `method` field is not included then the link **MUST** be available using GET.
+A link **may** contain a `method` field, containing the HTTP verb that must be used to follow the URL.  If the `method` field is not included then the link **MUST** be available using GET.
 
 ### Example
 
 ```json
 "links": {
   "self": {
-    "href": "/v3/apps/a-b-c"
+    "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff"
   },
   "space": {
-    "href": "/v3/apps/a-b-c/relationships/space"
+    "href": "/v3/spaces/123e4567-e89b-12d3-a456-426655440000"
   },
-  "processes": {
-	"href": "/v3/apps/a-b-c/relationships/processes"
+  "current_droplet": {
+    "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff/relationships/current_droplet"
   },
   "start": {
-    "href": "/v3/apps/a-b-c/start",
+    "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff/start",
     "method": "PUT"
   }
 }
 ```
-
-Note that the key is `links` to reduce the likelihood of collisions with a hypothetical resource field named `links`.
 
 ## Collections
 A collection is a list of multiple Resources.  A collection is represented as a JSON object.
@@ -449,30 +493,30 @@ Pagination **may** be used by [Collections](#collections) to limit the number of
 
 Pagination **MUST** include a `total_results` field with an integer value of the total number of records in the collection.
 
-Pagination **MUST** include a `total_pages` field with an integer value of the total number of pages in the collection.
+Pagination **MUST** include a `total_pages` field with an integer value of the total number of pages in the collection at the current page size.
 
 Pagination **MUST** include the following fields for pagination links:
 
-* `first`: the first page of resources
-* `last`: the last page of resources
-* `previous`: the previous page of resources
-* `next`: the next page of resources
+* `first`: URL for the first page of resources
+* `last`: URL for the last page of resources
+* `previous`: URL for the previous page of resources
+* `next`: URL for the next page of resources
 
 Pagination links **may** be `null`.  For example, if the page currently being displayed is the first page, then  `previous` link will be null.
 
 When pagination links contain a URL, they **MUST** be a JSON object with a field named `href` containing a string with the URL for the next page.
 
-The URL **MUST** include all query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be returned in a specific order direction via a query parameter, then the pagination links must include the proper query parameter to maintain the requested direction.
-
-The following query parameters **MUST** be used for pagination:
+The following query parameters **MUST** be supported for pagination:
 
 * `page`: the page number of resources to return (default: 1)
 * `per_page`: the number of resources to return in a paginated collection request (default: 50)
-* `order_by`: a field on the resource to order the collection by; each collection may choose a subset of fields that it can be sorted by 
+* `order_by`: a field on the resource to order the collection by; each collection may have a different subset of fields that can be sorted by 
 
-When collections are ordered by a subset of fields, each field **MAY** be prepended "-" to indicate descending order direction. If the field is not prepended, the ordering will default to ascending.
+When collections are ordered by a subset of fields, each field **MAY** be prepended with "-" to indicate descending order direction. If the field is not prepended, the ordering will default to ascending.
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
+
+Pagination URLs **MUST** include _all_ query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be sorted by a certain field, then the pagination links must include the proper query parameter to maintain the requested sort order.
 
 ### Example
 
@@ -493,27 +537,6 @@ If there are additional pagination query parameters, the parameters **MUST** hav
 }
 ```
 
-## Actions
-
-Actions are API requests that are expected to initiate change within the Cloud Foundry runtime.  This is differentiated from requests which update a record, but require additional updates — such as restarting an app — to cause changes to a resource to take affect.  
-
-Actions **MUST** use use POST as their HTTP verb.
-
-Actions **may** accept a request body.
-
-Actions **MUST** be listed in the `links` for the related resource.
-
-### Example
- `PUT /v3/apps/:guid/start`
- 
-## Pseudo-Resources
-
-Pseudo-Resources are API endpoints that are nested under other resources and do not have a unique identifier. Their lifecycles are tied directly to their parent resource. They may, however, require different permissions to operate on than their parent resource.
-
-### Example
-
-`GET /v3/apps/:guid/environment_variables`
-
 ## Query Parameters
 
 Query Parameters **MUST** include **ONLY** the following characters:
@@ -525,9 +548,11 @@ Query parameters that accept multiple values **MUST** be pluralized.
 
 If any request receives a query parameter it does not understand, the response **MUST** be a `400 Bad Request`.
 
-All query parameters **MUST** be properly [url-encoded](https://en.wikipedia.org/wiki/Percent-encoding#Current_standard). If a query parameter value includes the comma (`,`) character, the comma **MUST** be double encoded. Note that for readability purposes, the examples throughout this document do not show encoded query strings.
+All query parameters **MUST** be properly [url-encoded](https://en.wikipedia.org/wiki/Percent-encoding#Current_standard). If a single query parameter value includes the comma (`,`) character, the comma **MUST** be double encoded. 
 
-#### Example
+> **Note:** For readability purposes, the examples throughout this document do not show encoded query strings.
+
+#### Examples
 Single value:
 `GET /v3/apps?names=firstname`
 
@@ -537,29 +562,6 @@ Multiple values:
 Single value with comma:
  `GET /v3/apps?names=comma%2Cname`
 
-## Field Names
-
-Resource Fields **MUST** include **ONLY** the following characters:
-
-* a-z (lowercase only)
-* _ (underscore)
-
-Resource fields that accept multiple values **MUST** be pluralized.
-
-#### Example:
-```json
-{
-  "resources": [
-    {
-      "guid": "guid-1",
-      "environment_variables": {
-        "animal": "fish",
-        "color": "teal"
-      }
-    }
-  ]
-}
-```
 
 ## Filtering
 
@@ -571,17 +573,16 @@ Filters **MUST** allow a client to request resources matching multiple values of
 
 Filter parameters **MUST** be able to be combined with other filters on the same collection.
 
-#### Example multiple value request
+#### Examples
 
-`http://api.server.com/v3/apps?names=first_name,second_name`
+Single value request:
+`GET /v3/apps?names=the_name`
 
-#### Example single value request
+Multiple value request:
+`GET /v3/apps?names=first_name,second_name`
 
-`http://api.server.com/v3/apps?names=the_name`
-
-#### Example combined filters
-
-`http://api.server.com/v3/apps?names=the_name&space_guids=d-e-f`
+Combined filters:
+`GET /v3/apps?names=the_name&space_guids=00112233-4455-6677-8899-aabbccddeeff`
 
 ## Errors
 
