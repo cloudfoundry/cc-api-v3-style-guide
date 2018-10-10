@@ -1,7 +1,4 @@
 
-
-
-
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -30,6 +27,11 @@
   - [DELETE](#delete)
     - [Examples](#examples-3)
       - [Responses](#responses-2)
+- [Response Codes](#response-codes)
+  - [Successful Requests](#successful-requests)
+  - [Redirection](#redirection)
+  - [Client Errors](#client-errors)
+  - [Server Errors](#server-errors)
 - [Resources](#resources)
   - [Example](#example)
 - [Pseudo-Resources](#pseudo-resources)
@@ -52,11 +54,6 @@
   - [Status Codes](#status-codes)
   - [Response Body](#response-body)
     - [Example](#example-7)
-- [Response Codes](#response-codes)
-  - [Successful Requests](#successful-requests)
-  - [Redirection](#redirection)
-  - [Client Errors](#client-errors)
-  - [Server Errors](#server-errors)
 - [Relationships](#relationships)
   - [Currently](#currently)
   - [Proposal](#proposal)
@@ -329,6 +326,43 @@ DELETE /v3/apps/:guid
 | Missing Resource | 204 | N/A |
 | Read-only User | 403 | Error |
 | Unauthorized User | 404 | Error |
+
+## Response Codes
+
+### Successful Requests
+
+|Status Code|Description|Verbs|
+|---|---|---|
+|200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This **MUST** only be used if there is not a more appropriate 2XX response code. |GET, PATCH|
+|201 Created|This status **MUST** be returned for synchronous requests that result in the creation of a new resource.|POST|
+|202 Accepted|This status **MUST** be returned for requests that have been successfully accepted and will be asynchronously completed at a later time. See more in the [async](#asynchronicity) section. |POST, PATCH, DELETE|
+|204 No Content|This status **MUST** be returned for synchronous requests that complete successfully and have no response body.|DELETE
+
+
+### Redirection
+
+|Status Code|Description|Verbs|
+|---|---|---|
+|302 Found| This status **MUST** be returned when the cloud controller redirects to another location. Example: Downloading a package from an external blob store.  |GET|
+
+
+### Client Errors
+
+|Status Code|Description|Verbs|
+|---|---|---|
+|400 Bad Request|This status **MUST** be returned for requests that provide malformed or invalid data. Examples: malformed request body, unexpected query parameters, or invalid request fields.|GET, PATCH, POST, DELETE|
+|401 Unauthenticated|This status **MUST** be returned if the requested resource requires an authenticated user but there is no OAuth token provided, or the OAuth token provided is invalid.|GET, POST, PATCH, DELETE|
+|403 Forbidden|This status **MUST** be returned if the request cannot be performed by the user due to lack of permissions. Example: User with read-only permissions to a resource tries to update it. |POST, PATCH, DELETE|
+|404 Not Found|This status **MUST** be returned if the requested resource does not exist or if the user requesting the resource has insufficient permissions to view the resource.|GET, POST, PATCH, DELETE|
+|422 Unprocessable Entity|This status **MUST** be returned if the request is syntactically valid, but performing the requested operation would result in a invalid state. Example: Attempting to start an app without assigning a droplet.|POST, PATCH, DELETE|
+
+### Server Errors
+
+|Status Code|Description|
+|---|---|
+|500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
+|502 Bad Gateway|This status **MUST** be returned when an external service failure causes a request to fail. Example: Being unable to reach requested service broker.
+|503 Service Unavailable|This status **MUST** be returned when an internal service failure causes a request to fail. Example: Being unable to reach Diego or CredHub.
 
 ## Resources
 
@@ -621,43 +655,6 @@ Each error object in the list **MUST** include the following keys:
   ]
 }
 ```
-
-## Response Codes
-
-### Successful Requests
-
-|Status Code|Description|Verbs|
-|---|---|---|
-|200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This must only be used if there is not a more appropriate 2XX response code. |GET, PATCH, PUT|
-|201 Created|This status **MUST** be returned for synchronous requests that result in the creation of a new resource.|POST|
-|202 Accepted|This status **MUST** be returned for requests that have been successfully accepted and will be asynchronously completed at a later time. See more in the [async](#asynchronicity) section. |POST,PATCH,PUT,DELETE|
-|204 No Content|This status **MUST** be returned for synchronous requests that complete successfully and have no response body.|DELETE
-
-
-### Redirection
-
-|Status Code|Description|Verbs|
-|---|---|---|
-|302 Found| This status **MUST** be returned when the cloud controller redirects to another location. Example: Downloading a package from an external blob store.  |GET|
-|[303 See Other](https://tools.ietf.org/html/rfc7231#section-6.4.4)| This status **MUST** be returned when an async job finishes. It must include a location header containing the resource link. See more in the [async](#asynchronicity) section. |GET|
-
-
-### Client Errors
-
-|Status Code|Description|Verbs|
-|---|---|---|
-|400 Bad Request|This status **MUST** be returned for requests that provide malformed or invalid data. Examples: invalid JSON, unexpected query parameters or request fields.|GET, PATCH, POST, PUT, DELETE|
-|401 Unauthenticated|This status **MUST** be returned if the requested resource requires an authenticated user but there is no OAuth token provided, or the OAuth token provided is invalid.|GET, POST, PATCH, DELETE, PUT|
-|403 Forbidden|This status **MUST** be returned if the request cannot be performed by the user due to lack of permissions. Example: User with read-only permissions to a resource tries to update it. |POST, PATCH, DELETE, PUT|
-|404 Not Found|This status **MUST** be returned if the requested resource does not exist or if the user requesting the resource has insufficient permissions to view the resource.|GET, POST, PATCH, PUT, DELETE|
-|422 Unprocessable Entity|This status **MUST** be returned if the request is semantically valid, but performing the requested operation would result in a invalid state. Example: Attempting to start an app without assigning a droplet.|POST, PATCH, PUT|
-
-### Server Errors
-
-|Status Code|Description|
-|---|---|
-|500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
-|502 Bad Gateway|This status **MUST** be returned when an upstream service failure causes a request to fail. Example: Being unable to reach requested service broker.
 
 ## Relationships
 
