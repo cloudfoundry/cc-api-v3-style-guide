@@ -1,7 +1,3 @@
-
-
-
-
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -821,17 +817,14 @@ PATCH /v3/apps/:app_guid/relationships/routes
 
 ## Nested Resources
 
-Nested resources can optionally be accessed through their parent resource.
+Nested resources *may* be accessible through their parent resource.
 ```
-GET /v3/apps/:guid/droplets
+GET /v3/apps/:app_guid/droplets
 ```
 This will be equivalent to
 ```
 GET /v3/droplets?app_guids=:app_guid
 ```
-
-These end points are optional and may not exist for all resources. Good opportunities for creating them:
-* The resource commonly or exclusively lists within the context of the parent resource. E.g. droplets only exist inside apps.
 
 ## Including Related Resources
 
