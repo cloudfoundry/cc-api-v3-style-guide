@@ -1,4 +1,7 @@
 
+
+
+
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -55,18 +58,30 @@
   - [Response Body](#response-body)
     - [Example](#example-7)
 - [Relationships](#relationships)
-  - [Currently](#currently)
-  - [Proposal](#proposal)
+  - [Relationships at Resource Creation](#relationships-at-resource-creation)
+    - [To-One Relationships](#to-one-relationships)
+    - [To-Many Relationships](#to-many-relationships)
+  - [Relationships for Existing Resources](#relationships-for-existing-resources)
+    - [To-One Relationships](#to-one-relationships-1)
+      - [Viewing](#viewing)
+      - [Setting](#setting)
+      - [Clearing](#clearing)
+    - [To-Many Relationships](#to-many-relationships-1)
+      - [Viewing](#viewing-1)
+      - [Adding](#adding)
+      - [Removing](#removing)
+      - [Replacing All](#replacing-all)
+      - [Clearing All](#clearing-all)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Proposal](#proposal-1)
+  - [Proposal](#proposal)
   - [Pagination of Related Resources](#pagination-of-related-resources)
 - [Requesting Partial Resources](#requesting-partial-resources)
   - [Proposal For Sub-Resources](#proposal-for-sub-resources)
 - [Asynchronicity](#asynchronicity)
-  - [Currently](#currently-1)
+  - [Currently](#currently)
     - [Grievances](#grievances)
-  - [Proposal](#proposal-2)
+  - [Proposal](#proposal-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
@@ -658,90 +673,149 @@ Each error object in the list **MUST** include the following keys:
 
 ## Relationships
 
-### Currently
+Relationships represent named associations between resources. Relationships can be used to create, read, update, and delete associations through the relationship sub resource.
 
-Associations are sometimes created by setting a `relationship_guid` field on one of the resources.
+A resource **may** have a relationship with exactly one instance of a resource (a _to-one_ relationship).
 
-* For example, `POST /v3/apps { "space_guid": "abc" }` creates an app associated to a space.
+A resource **may** have a relationship with multiple instances of a resource (a _to-many_ relationship).
 
-Other times associations are added via PUT requests to a nested resource.
+Resources **may** implement none, some, or all of the relationship operation listed below for each of its associations.
 
-* For example, `PUT /v3/apps/guid/routes { route_guid: the guid }` will add a route association to an app.
+### Relationships at Resource Creation
 
-An association can then be deleted via `DELETE /v3/apps/guid/routes { route_guid: the guid }`.
+#### To-One Relationships
 
-This currently feels a little clunky for several reasons:
-* Associations are created in different ways depending on whether we consider it a required relationship or not
-* The nested routes make it appear that the request is affecting a routes resource, but it is really a relationship that is being created or deleted
-* Associations become a top-level concern on the resource such that the way relationships exist for that resource are difficult to modify without causing breaking changes or leaving unused fields
+Create an association between the resource being created and a single, existing resource.
 
-### Proposal
-
-Add a relationship object to resources similar to the jsonapi spec.
-
-Creating an app could change to allow creating relationships at create time by including the relationships object.  Some relationships could be required at creation such as space in the app case.
-
+Example:
 ```json
 POST /v3/apps
 {
   "name": "blah",
   "relationships": {
-   "space": {"guid": "1234"},
-   "routes": [
-     {"guid": "2345"},
-     {"guid": "3456"}
-   ],
+   "space": { "data": { "guid": "1234" }}
   }
 }
 ```
 
-Modifying relationships later could be done through a nested relationship resource
+#### To-Many Relationships
 
-Setting a \*-to-one relationship:
+Create associations between the resource being created and several existing resources.
+
+Example:
 ```json
-PATCH /v3/apps/guid/relationships/space
+POST /v3/apps
 {
-  "data": {"guid": "some-guid"}
+  "name": "blah",
+  "relationships": {
+   "routes": { "data": [
+     { "guid": "2345" },
+     { "guid": "3456" }
+   ] },
+  }
 }
 ```
 
-Clearing a \*-to-one relationship:
+### Relationships for Existing Resources
+
+Viewing, updating, and removing relationships for existing resources can be accessed through nested relationship resource endpoints.
+
+#### To-One Relationships
+
+##### Viewing
+View the association between a resource and a single other resource for the given relationship.
+
+Example:
 ```json
-PATCH /v3/apps/guid/relationships/space
+GET /v3/apps/:app_guid/relationships/space
+```
+Response:
+```json
+{
+  "data": { "guid": "space-guid" }
+}
+```
+
+##### Setting
+Update the association for a resource to a single other resource for the given relationship.
+
+Example:
+```json
+PATCH /v3/apps/:app_guid/relationships/space
+{
+  "data": { "guid": "space-guid" }
+}
+```
+
+##### Clearing
+Remove the association between two resources for the given relationship.
+
+Example:
+```json
+PATCH /v3/apps/:app_guid/relationships/space
 {
   "data": null
 }
 ```
 
-Adding to a \*-to-many relationship (not an overwrite/replace):
+#### To-Many Relationships
+
+##### Viewing
+View the associations between a resource and multiple other resources for the given relationship.
+
+Example:
 ```json
-POST /v3/apps/guid/relationships/routes
+GET /v3/apps/:app_guid/relationships/routes
+```
+Response:
+```json
 {
-  "data": [{"guid": "asdf" }, {"guid": "gfds" }]
+  "data": [
+    { "guid": "route-guid" },
+    { "guid": "other-route-guid" }
+  ]
 }
 ```
 
-Replacing all items in a \*-to-many relationship:
+##### Adding
+
+Add additional associations between a resource and other resources for the given relationship.
+
+Example:
 ```json
-PATCH /v3/apps/guid/relationships/routes
+POST /v3/apps/:app_guid/relationships/routes
 {
-  "data": [{"guid": "some-guid" }, {"guid": "whatever" }]
+  "data": [{ "guid": "route-guid" }, { "guid": "route-guid" }]
 }
 ```
 
-Clearing all items in a \*-to-many relationship:
+##### Removing
+
+Remove the association between a resource and another resource for the given relationship.
+
 ```json
-PATCH /v3/apps/guid/relationships/routes
+DELETE /v3/apps/:app_guid/relationships/routes/:route_guid
+```
+
+##### Replacing All
+
+Replace all associations between a resource and other resources for the given relationship.
+
+```json
+PATCH /v3/apps/:app_guid/relationships/routes
+{
+  "data": [{ "guid": "route-guid" }, { "guid": "other-route-guid" }]
+}
+```
+
+##### Clearing All
+
+Clear all associations between a resource and other resources for the given relationship.
+
+```json
+PATCH /v3/apps/:app_guid/relationships/routes
 {
   "data": []
-}
-```
-
-Removing some items from a \*-to-many relationship:
-```json
-DELETE /v3/apps/guid/relationships/routes
-{
-  "data": [{"guid": "asdf" }, {"guid": "hgfg" }]
 }
 ```
 
