@@ -70,14 +70,13 @@
       - [Clearing All](#clearing-all)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Proposal](#proposal)
   - [Pagination of Related Resources](#pagination-of-related-resources)
 - [Requesting Partial Resources](#requesting-partial-resources)
   - [Proposal For Sub-Resources](#proposal-for-sub-resources)
 - [Asynchronicity](#asynchronicity)
   - [Currently](#currently)
     - [Grievances](#grievances)
-  - [Proposal](#proposal-1)
+  - [Proposal](#proposal)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
@@ -830,21 +829,26 @@ GET /v3/droplets?app_guids=:app_guid
 
 This is a mechanism for including multiple related resources in a single response.
 
-A use case for this would be to display an HTML page that includes information about both an app and its space and would like to gather this information in one HTTP request.
+Resources and collections **may** accept an `include` query parameter with a list of resource paths.
 
-### Proposal
+Each resource path **MUST** be a series of period-separated relationship names. For example: `app.space.organization`
 
-Included resources are in-lined under their pluralized resource name in an `included` object on the primary resource.  If a resource within a resource — `resource.otherresource` — is requested, it is added in the top level `included` object and not repeated. Associations between included resources and requested resources must be shown in the 'relationships' section for the requested resource. Duplicate included resources are not repeated
+The list of resource paths **MUST** be comma delimited. For example: `include=space,space.organization`
+
+Included resources **MUST** be returned in an `included` object on the primary resource or collection.  
+
+Duplicate included resources **MUST NOT** be repeated. For example: Listing multiple apps in the same space with `include=space` will only return the space once.
+
+All included resources **MUST** be returned in the top level `included` object and not repeated.
 
 ```json
-GET /v3/apps?include=space,space.organization,space.space_quota_definition,space.organization.quota_definition
-
+GET /v3/apps?include=space,space.organization
 {
   "pagination": {
-    "total_results": 3,
+    "total_results": 2,
     "total_pages": 1,
     "first": {
-      "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
+      "href": "/v3/apps?include=space,space.organization&page=1&per_page=10"
     },
     "last": {
       "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
@@ -952,55 +956,6 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
           "method": "PUT"
         }
       }
-    },
-    {
-      "guid": "8c943e87-c00c-4d0b-8583-d5c49111a5ec",
-      "name": "my_app2",
-      "desired_state": "STOPPED",
-      "total_desired_instances": 0,
-      "buildpack": null,
-      "created_at": "1970-01-01T00:00:02Z",
-      "updated_at": null,
-      "environment_variables": {
-
-      },
-      "relationships": {
-        "space": {
-          "guid": "space1-guid"
-        }    
-      },
-      "links": {
-        "self": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec"
-        },
-        "space": {
-          "href": "/v2/spaces/space1-guid"
-        },
-        "processes": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/processes"
-        },
-        "routes": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/routes"
-        },
-        "packages": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/packages"
-        },
-        "droplets": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/droplets"
-        },
-        "start": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/start",
-          "method": "PUT"
-        },
-        "stop": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/stop",
-          "method": "PUT"
-        },
-        "assign_current_droplet": {
-          "href": "/v3/apps/8c943e87-c00c-4d0b-8583-d5c49111a5ec/current_droplet",
-          "method": "PUT"
-        }
-      }
     }
   ],
   "included": {
@@ -1042,7 +997,7 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
           "updated_at": null
         },
         "relationships": {
-          "organization": {"guid": "org2-guid"},
+          "organization": {"guid": "org1-guid"},
           "space_quota_definition": {"guid": "spacequota1-guid"}
         },
         "entity": {
@@ -1091,116 +1046,7 @@ GET /v3/apps?include=space,space.organization,space.space_quota_definition,space
           "app_events_url": "/v2/organizations/org1-guid/app_events",
           "space_quota_definitions_url": "/v2/organizations/org1-guid/space_quota_definitions"
         }
-      } ,
-      {
-        "metadata": {
-          "guid": "org2-guid",
-          "url": "/v2/organizations/org2-guid",
-          "created_at": "2015-10-13T17:38:34Z",
-          "updated_at": null
-        },
-        "relationships": {
-          "quota_definition": {"guid": "quota2-guid"}
-        },
-        "entity": {
-          "name": "org2",
-          "billing_enabled": false,
-          "quota_definition_guid": "dad3cc94-2ec9-4178-b6af-0c7819812e1c",
-          "status": "active",
-          "quota_definition_url": "/v2/quota_definitions/dad3cc94-2ec9-4178-b6af-0c7819812e1c",
-          "spaces_url": "/v2/organizations/org2-guid/spaces",
-          "domains_url": "/v2/organizations/org2-guid/domains",
-          "private_domains_url": "/v2/organizations/org2-guid/private_domains",
-          "users_url": "/v2/organizations/org2-guid/users",
-          "managers_url": "/v2/organizations/org2-guid/managers",
-          "billing_managers_url": "/v2/organizations/org2-guid/billing_managers",
-          "auditors_url": "/v2/organizations/org2-guid/auditors",
-          "app_events_url": "/v2/organizations/org2-guid/app_events",
-          "space_quota_definitions_url": "/v2/organizations/org2-guid/space_quota_definitions"
-        }
-      } 
-    ],
-    "quota_definitions": [
-      {
-        "metadata": {
-          "guid": "quota1-guid",
-          "url": "/v2/quota_definitions/quota1-guid",
-          "created_at": "2015-10-13T17:31:34Z",
-          "updated_at": null
-        },
-        "entity": {
-          "name": "default",
-          "non_basic_services_allowed": true,
-          "total_services": 100,
-          "total_routes": 1000,
-          "total_private_domains": -1,
-          "memory_limit": 10240,
-          "trial_db_allowed": false,
-          "instance_memory_limit": -1,
-          "app_instance_limit": -1
-        }
-      },
-      {
-        "metadata": {
-          "guid": "quota2-guid",
-          "url": "/v2/quota_definitions/quota2-guid",
-          "created_at": "2015-10-13T17:31:34Z",
-          "updated_at": null
-        },
-        "entity": {
-          "name": "basic",
-          "non_basic_services_allowed": false,
-          "total_services": 100,
-          "total_routes": 1000,
-          "total_private_domains": 10,
-          "memory_limit": 10240,
-          "trial_db_allowed": false,
-          "instance_memory_limit": 2048,
-          "app_instance_limit": 50
-        }
       }
-    ],
-    "space_quota_definitions": [
-      {
-        "metadata": {
-          "guid": "spacequota1-guid",
-          "url": "/v2/space_quota_definitions/spacequota1_guid",
-          "created_at": "2015-10-13T17:31:39Z",
-          "updated_at": null
-        },
-        "entity": {
-          "name": "spacequota1",
-          "organization_guid": "org1-guid",
-          "non_basic_services_allowed": true,
-          "total_services": 60,
-          "total_routes": 1000,
-          "memory_limit": 20480,
-          "instance_memory_limit": -1,
-          "app_instance_limit": -1,
-          "organization_url": "/v2/organizations/org1-guid",
-          "spaces_url": "/v2/space_quota_definitions/spacequota1-guid/spaces"
-        }     
-      },
-      {
-        "metadata": {
-          "guid": "spacequota2-guid",
-          "url": "/v2/space_quota_definitions/spacequota2_guid",
-          "created_at": "2015-10-13T17:31:39Z",
-          "updated_at": null
-        },
-        "entity": {
-          "name": "spacequota2",
-          "organization_guid": "org2-guid",
-          "non_basic_services_allowed": true,
-          "total_services": 60,
-          "total_routes": 1000,
-          "memory_limit": 20480,
-          "instance_memory_limit": -1,
-          "app_instance_limit": -1,
-          "organization_url": "/v2/organizations/org2-guid",
-          "spaces_url": "/v2/space_quota_definitions/spacequota2-guid/spaces"
-        }     
-      },
     ]
   }
 }
