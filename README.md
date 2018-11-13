@@ -1,3 +1,4 @@
+
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -839,8 +840,6 @@ Included resources **MUST** be returned in an `included` object on the primary r
 
 Duplicate included resources **MUST NOT** be repeated. For example: Listing multiple apps in the same space with `include=space` will only return the space once.
 
-All included resources **MUST** be returned in the top level `included` object and not repeated.
-
 ```json
 GET /v3/apps?include=space,space.organization
 {
@@ -848,209 +847,50 @@ GET /v3/apps?include=space,space.organization
     "total_results": 2,
     "total_pages": 1,
     "first": {
-      "href": "/v3/apps?include=space,space.organization&page=1&per_page=10"
+      "href": "http://api.example.com/v3/apps?include=space,space.organization&page=1"
     },
     "last": {
-      "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
+      "href": "http://api.example.com/v3/apps?include=space,space.organization&page=1"
     },
-    "next": {
-      "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
-    },
+    "next": null,
     "previous": null
   },
   "resources": [
     {
-      "guid": "643e170c-42cf-4704-840f-4fc22e95f3c5",
-      "name": "my_app3",
-      "desired_state": "STOPPED",
-      "total_desired_instances": 0,
-      "buildpack": "name-2009",
-      "created_at": "1970-01-01T00:00:03Z",
-      "updated_at": null,
-      "environment_variables": {
-        "magic": "beautiful"
-      },
+      "guid": "app1-guid",
       "relationships": {
-        "space": {
-          "guid": "space2-guid"
-        }    
-      },
-      "links": {
-        "self": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5"
-        },
-        "space": {
-          "href": "/v2/spaces/space2-guid"
-        },
-        "processes": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/processes"
-        },
-        "routes": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/routes"
-        },
-        "packages": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/packages"
-        },
-        "droplets": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/droplets"
-        },
-        "start": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/start",
-          "method": "PUT"
-        },
-        "stop": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/stop",
-          "method": "PUT"
-        },
-        "assign_current_droplet": {
-          "href": "/v3/apps/643e170c-42cf-4704-840f-4fc22e95f3c5/current_droplet",
-          "method": "PUT"
-        }
+        "space": {"guid": "space2-guid"}
       }
     },
     {
-      "guid": "3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef",
-      "name": "my_app2",
-      "desired_state": "STOPPED",
-      "total_desired_instances": 0,
-      "buildpack": null,
-      "created_at": "1970-01-01T00:00:02Z",
-      "updated_at": null,
-      "environment_variables": {
-
-      },
+      "guid": "app2-guid",
       "relationships": {
-        "space": {
-          "guid": "space1-guid"
-        }    
-      },
-      "links": {
-        "self": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef"
-        },
-        "space": {
-          "href": "/v2/spaces/space1-guid"
-        },
-        "processes": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/processes"
-        },
-        "routes": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/routes"
-        },
-        "packages": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/packages"
-        },
-        "droplets": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/droplets"
-        },
-        "start": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/start",
-          "method": "PUT"
-        },
-        "stop": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/stop",
-          "method": "PUT"
-        },
-        "assign_current_droplet": {
-          "href": "/v3/apps/3b310427-c9f0-4e7c-ab66-5f5d9a86a4ef/current_droplet",
-          "method": "PUT"
-        }
+        "space": {"guid": "space1-guid"}
       }
     }
   ],
   "included": {
     "spaces": [
       {
-        "metadata": {
-          "guid": "space1-guid",
-          "url": "/v2/spaces/space1-guid",
-          "created_at": "2015-10-07T00:35:20Z",
-          "updated_at": null
-        },
+        "guid": "space1-guid",
         "relationships": {
-          "organization": {"guid": "org1-guid"},
-          "space_quota_definition": {"guid": "spacequota1-guid"}
-        },
-        "entity": {
-          "name": "name-76",
-          "organization_guid": "org1-guid",
-          "space_quota_definition_guid": "spacequota1-guid",
-          "allow_ssh": true,
-          "organization_url": "/v2/organizations/org1-guid",
-          "developers_url": "/v2/spaces/space1-guid/developers",
-          "managers_url": "/v2/spaces/space1-guid/managers",
-          "auditors_url": "/v2/spaces/space1-guid/auditors",
-          "apps_url": "/v2/spaces/space1-guid/apps",
-          "routes_url": "/v2/spaces/space1-guid/routes",
-          "domains_url": "/v2/spaces/space1-guid/domains",
-          "service_instances_url": "/v2/spaces/space1-guid/service_instances",
-          "app_events_url": "/v2/spaces/space1-guid/app_events",
-          "events_url": "/v2/spaces/space1-guid/events",
-          "security_groups_url": "/v2/spaces/space1-guid/security_groups" 
+          "organization": {"guid": "org1-guid"}
         }
       },
       {
-        "metadata": {
-          "guid": "space2-guid",
-          "url": "/v2/spaces/space2-guid",
-          "created_at": "2015-10-07T00:35:20Z",
-          "updated_at": null
-        },
+        "guid": "space2-guid",
         "relationships": {
-          "organization": {"guid": "org1-guid"},
-          "space_quota_definition": {"guid": "spacequota1-guid"}
-        },
-        "entity": {
-          "name": "name-77",
-          "organization_guid": "org2-guid",
-          "space_quota_definition_guid": "spacequota1-guid",
-          "allow_ssh": true,
-          "organization_url": "/v2/organizations/org2-guid",
-          "developers_url": "/v2/spaces/space2-guid/developers",
-          "managers_url": "/v2/spaces/space2-guid/managers",
-          "auditors_url": "/v2/spaces/space2-guid/auditors",
-          "apps_url": "/v2/spaces/space2-guid/apps",
-          "routes_url": "/v2/spaces/space2-guid/routes",
-          "domains_url": "/v2/spaces/space2-guid/domains",
-          "service_instances_url": "/v2/spaces/space2-guid/service_instances",
-          "app_events_url": "/v2/spaces/space2-guid/app_events",
-          "events_url": "/v2/spaces/space2-guid/events",
-          "security_groups_url": "/v2/spaces/space2-guid/security_groups" 
+          "organization": {"guid": "org1-guid"}
         }
       }
     ],
     "organizations": [
       {
-        "metadata": {
-          "guid": "org1-guid",
-          "url": "/v2/organizations/org1-guid",
-          "created_at": "2015-10-13T17:31:34Z",
-          "updated_at": null
-        },
-        "relationships": {
-          "quota_definition": {"guid": "quota1-guid"}
-        },
-        "entity": {
-          "name": "org1",
-          "billing_enabled": false,
-          "quota_definition_guid": "dad3cc94-2ec9-4178-b6af-0c7819812e1c",
-          "status": "active",
-          "quota_definition_url": "/v2/quota_definitions/dad3cc94-2ec9-4178-b6af-0c7819812e1c",
-          "spaces_url": "/v2/organizations/org1-guid/spaces",
-          "domains_url": "/v2/organizations/org1-guid/domains",
-          "private_domains_url": "/v2/organizations/org1-guid/private_domains",
-          "users_url": "/v2/organizations/org1-guid/users",
-          "managers_url": "/v2/organizations/org1-guid/managers",
-          "billing_managers_url": "/v2/organizations/org1-guid/billing_managers",
-          "auditors_url": "/v2/organizations/org1-guid/auditors",
-          "app_events_url": "/v2/organizations/org1-guid/app_events",
-          "space_quota_definitions_url": "/v2/organizations/org1-guid/space_quota_definitions"
-        }
+        "guid": "org1-guid"
       }
     ]
   }
 }
-
 ```
 ### Pagination of Related Resources
 
