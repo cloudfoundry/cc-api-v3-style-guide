@@ -71,9 +71,11 @@
       - [Clearing All](#clearing-all)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Pagination of Related Resources](#pagination-of-related-resources)
-- [Requesting Partial Resources](#requesting-partial-resources)
-  - [Proposal For Sub-Resources](#proposal-for-sub-resources)
+  - [Proposal: Pagination of Related Resources](#proposal-pagination-of-related-resources)
+- [Proposal: Requesting Specific Fields Resources](#proposal-requesting-specific-fields-resources)
+  - [Sparse Fields](#sparse-fields)
+  - [Hidden Fields](#hidden-fields)
+  - [Proposal: Fields For Sub-Resources](#proposal-fields-for-sub-resources)
 - [Asynchronicity](#asynchronicity)
   - [Currently](#currently)
     - [Grievances](#grievances)
@@ -892,7 +894,11 @@ GET /v3/apps?include=space,space.organization
   }
 }
 ```
-### Pagination of Related Resources
+### Proposal: Pagination of Related Resources
+
+> Note: This is a proposal and is not currently implemented on any API endpoints
+
+For some requests (especially to-many relationships), there may be more related resources than can be returned in a single response.
 
 Related resources are paginated in a similar style to how normal responses are paginated.  
 The pagination data **may** be excluded if all results are included in the response.
@@ -913,13 +919,13 @@ The pagination data **may** be excluded if all results are included in the respo
         "total_results": 20,
         "total_pages": 2,
         "first": {
-          "href": "/v3/apps/:guid/routes?order_by=-created_at&page=1&per_page=2"
+          "href": "https://api.example.com/v3/apps/:guid/routes?page=1&per_page=2"
         },
         "last": {
-          "href": "/v3/apps/:guid/routes?order_by=-created_at&page=10&per_page=2"
+          "href": "https://api.example.com/v3/apps/:guid/routes?page=10&per_page=2"
         },
         "next": {
-          "href": "/v3/apps/:guid/routes?order_by=-created_at&page=2&per_page=2"
+          "href": "https://api.example.com/v3/apps/:guid/routes?page=2&per_page=2"
         },
         "previous": null
       }
@@ -927,10 +933,22 @@ The pagination data **may** be excluded if all results are included in the respo
   }
 }
 ```
-## Requesting Partial Resources
+##  Proposal: Requesting Specific Fields Resources
+
+> Note: This is a proposal and is not currently implemented on any API endpoints
+
+### Sparse Fields
+
+Clients may only wish to see a specific set of fields from the API. 
+
+The `fields` query parameter **may** be provided. 
+
+The `fields`  parameter **MUST** be a comma-delimited list of field names.
+
+If the `fields`  parameter is present, the API **MUST** return only the specified fields.
 
 ```json
-GET /apps?fields=guid,name
+GET /apps/:guid?fields=guid,name
 
 {
   "guid": "some-guid",
@@ -938,18 +956,47 @@ GET /apps?fields=guid,name
 }
 ```
 
-### Proposal For Sub-Resources
+### Hidden Fields
 
-If we want to be able to filter the fields of subresources, we could do something like:
+The API may not return some fields by default. For example, a field might be computationally expensive, or require a certain permission to return.
+
+The `fields` query parameter **may** be provided. 
+
+The `fields`  parameter **MUST** be a comma-delimited list of field names.
+
+If the `fields`  parameter is present, the API **MUST** return the the specified fields in addition to the default set of fields.
+
+Without Fields Parameter:
 ```json
-GET /apps?fields[apps]=guid,name&fields[droplets]=buildpack
+GET /apps/:guid
+
+{
+  "guid": "some-guid"
+}
+```
+
+With Fields Parameter:
+```json
+GET /apps/:guid?fields=expensive_field
 
 {
   "guid": "some-guid",
-  "name": "Zach",
+  "expensive_field": "$$$$"
+}
+```
+
+### Proposal: Fields For Sub-Resources
+
+If we want to be able to filter the fields of included resources, we could do something like:
+```json
+GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
+
+{
+  "guid": "some-guid",
+  "name": "my-app",
   "included": {
     "droplet": {
-      "buildpack": "ruby"
+      "guid": "droplet-guid"
     }
   }
 }
