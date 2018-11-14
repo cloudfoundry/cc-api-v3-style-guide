@@ -1,4 +1,6 @@
 
+
+
 # Cloud Controller API v3 Style Guide
 
 ## Table of contents
@@ -72,14 +74,14 @@
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
   - [Proposal: Pagination of Related Resources](#proposal-pagination-of-related-resources)
+- [Asynchronicity](#asynchronicity)
+  - [Triggering Async Actions](#triggering-async-actions)
+  - [Monitoring Async Actions](#monitoring-async-actions)
+  - [Viewing Errors from Async Actions](#viewing-errors-from-async-actions)
 - [Proposal: Requesting Specific Fields Resources](#proposal-requesting-specific-fields-resources)
   - [Sparse Fields](#sparse-fields)
   - [Hidden Fields](#hidden-fields)
   - [Proposal: Fields For Sub-Resources](#proposal-fields-for-sub-resources)
-- [Asynchronicity](#asynchronicity)
-  - [Currently](#currently)
-    - [Grievances](#grievances)
-  - [Proposal](#proposal)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
@@ -933,6 +935,91 @@ The pagination data **may** be excluded if all results are included in the respo
   }
 }
 ```
+## Asynchronicity
+
+Individual endpoints are responsible for behaving either asynchronously (return 202 status code) or synchronously (return non-202 status code).
+
+### Triggering Async Actions
+
+The CC will return a 202 with a `Location` header pointing to the async job.
+```json
+DELETE /v3/resource/:guid
+202 Accepted
+Location: /v3/jobs/123
+```
+### Monitoring Async Actions
+
+GET requests made to the job resource **MUST** return 200 with information about the status of the job.
+
+```json
+GET /v3/jobs/123
+200 OK
+
+{
+  "state": "PROCESSING",
+  "operation": "service_instance.create",
+  "status": "Warming the shards",
+  "links": {
+    "self": {
+      "href": "https://api.example.org/v3/jobs/123"
+    }
+  }
+}
+```
+
+The job resource **may* include links to resources affected by the operation.
+
+```json
+GET /v3/jobs/123
+200 OK
+
+{
+  "state": "COMPLETE",
+  "operation": "splines.reticulate",
+  "status": "Splines successfully reticulated",
+  "links": {
+    "self": {
+      "href": "https://api.example.org/v3/jobs/123"
+    },
+    "splines": {
+      "href": "https://api.example.org/v3/splines/456"
+    }
+  }
+}
+```
+
+### Viewing Errors from Async Actions
+
+The job resource **MUST* surface any errors that occur during the async operation.
+
+```json
+GET /v3/jobs/123
+200 OK
+
+{
+  "state": "FAILED",
+  "operation": "sun.fly_to",
+  "status": "Failed to fly to the sun",
+  "errors": [
+      {
+       "detail": "Wings are too waxy",
+       "title": "CF-UnprocessableEntity",
+       "code": 10008
+    },
+    {
+       "detail": "Hubris is too high",
+       "title": "CF-UnprocessableEntity",
+       "code": 10008
+    }
+  ],
+  "links": {
+    "self": {
+      "href": "https://api.example.org/v3/jobs/123"
+    }
+  }
+}
+```
+
 ##  Proposal: Requesting Specific Fields Resources
 
 > Note: This is a proposal and is not currently implemented on any API endpoints
@@ -1001,69 +1088,3 @@ GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
   }
 }
 ```
-
-
-## Asynchronicity
-
-### Currently
-
-Via Mark: The original impetus for the `async` flag was:
-
-1. The CC API could not make a major version bump, so it needed to be an additive change. The hope was to move CC to be fully async-by-default
-2. Long running requests could be triggered multiple times and bring down the CC
-3. Long running requests were getting clipped by network timeouts
-
-The team later learned that not all endpoints need to be async (/v2/info for example). The overhead of background workers/ jobs is not worth it.
-
-* By default, `async=true` causes the CLI to block and poll indefinitely waiting for job to complete (CC has to enforce a timeout)
-* By default, `accepts_incomplete=true` causes the CLI to exit once a poll-able resource is returned, and CC will poll for up to a week. CC ignores `async=true`
-
-Requests including the `async=true` query parameter will resolve asynchronously. Instead of returning whatever resource is requested, the CC will return a job.
-
-#### Grievances
- * The CC returns a resource different than what is requested
- * Not all endpoints support `async=true`. There doesn't seem to be any indication of what supports it.
- * It doesn't play nice with `accepts_incomplete=true` (service-specific). The CC will currently ignore `async=true` if `accepts_incomplete` is included, even if the broker does not support async operations. This renders `async=true` useless for most broker operations.
- * Not all endpoints that support it need it. Sending `async=true` in many cases will slow down the request, since there is the worker/polling overhead. A 1 second synchronous operation doesn't need to happen out of band with a 5 second polling interval.
-
-### Proposal
-Remove both flags. Instead, endpoints are responsible for behaving either asynchronously (return 202) or synchronously (don't return 202).
-
-For async endpoints:
-`POST /v3/resource`
-
-The CC will return a 202 with a location header pointing to the job. Depending on the resource, it may also return a skeletal body containing the partial resource.
-```json
-202 Accepted
-Location: /v3/jobs/123
-
-{
-  "skeletor": "YOU! You will no longer stand between me and my destiny!"
-}
-```
-
-Before the job has completed,  GET requests made to the job endpoint will return 200 with information about the status of the job.
-```
-GET /v3/jobs/123
-```
-```json
-200 OK
-
-{
-  "status": "in progress"
-}
-```
-
-When the job has completed, GET request made to the job endpoint will return 303 and a location header to the resource (assuming it still exists).
-```
-GET /v3/jobs/123
-```
-```json
-303 See Other
-Location: /v3/resource/:guid
-
-{}
-```
-
-Note that for asynchronous deletes, the redirect location will be to a no-longer-existent resource.
-
