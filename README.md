@@ -325,6 +325,8 @@ Used to delete a resource.
 
 * DELETE requests **may** include query parameters
 * DELETE requests **must NOT** include a request body
+* Deleting a resource **may** also recursively delete associated resources.
+* Deleting a resource **may** occur syncronously or [asyncronously](#asynchronicity)
 
 #### Examples
 Delete a resource:
