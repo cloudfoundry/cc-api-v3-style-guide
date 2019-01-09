@@ -373,6 +373,8 @@ DELETE /v3/apps/:guid
 |404 Not Found|This status **MUST** be returned if the requested resource does not exist or if the user requesting the resource has insufficient permissions to view the resource.|GET, POST, PATCH, DELETE|
 |422 Unprocessable Entity|This status **MUST** be returned if the request is syntactically valid, but performing the requested operation would result in a invalid state. Example: Attempting to start an app without assigning a droplet.|POST, PATCH, DELETE|
 
+> 404 vs 403: If a resource does not exist OR a user does not have read permissions for it, then 404 **MUST** be returned. This is to prevent leaking information about what resources exist by returning 403s for resources that exist, but a user does not have read permissions for.
+
 ### Server Errors
 
 |Status Code|Description|
