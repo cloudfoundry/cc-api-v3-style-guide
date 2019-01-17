@@ -950,6 +950,15 @@ The pagination data **may** be excluded if all results are included in the respo
 
 Individual endpoints are responsible for behaving either asynchronously (return 202 status code) or synchronously (return non-202 status code).
 
+Since Cloud Controller collaborates with multiple external Cloud Foundry components, many endpoints will have asynchronous side effects that do not necessarily need to be represented by an async job on the API. For example, scaling the number of instances of a process will trigger their asynchronous creation in the runtime. However, the user's action was to increment the instance count in the CC's data store, which is not an asynchronous operation. The CC then works behind the scenes to make the system consistent by creating the LRPs (much as it would if the runtime lost state and CC needed to recover the desired state).
+
+In general, good signs an endpoint should return an async job are:
+1. Updating state in the CC will take significant time/processing. Example: recursive deletes
+2. Updating state in the CC requires talking to the blobstore. Example: file uploads
+
+Keep in mind that only the user/client that issued the request triggering the async job will have the link to track the job. If other users or system components care about the operation, it is helpful to surface state elsewhere -- either on the resource itself or through the creation of another resource.
+
+
 ### Triggering Async Actions
 
 The CC will return a 202 with a `Location` header pointing to the async job.
@@ -1001,7 +1010,7 @@ GET /v3/jobs/123
 
 ### Viewing Errors from Async Actions
 
-The job resource **MUST* surface any errors that occur during the async operation.
+The job resource **MUST** surface any errors that occur during the async operation.
 
 ```json
 GET /v3/jobs/123
