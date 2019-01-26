@@ -633,20 +633,28 @@ Filtering is the use of query parameters to return a subset of resources within 
 
 Filter query parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
-Filters **MUST** allow a client to request resources matching multiple values of by accepting the filter as an array.
+Filters **MUST** allow a client to request resources matching multiple values by accepting a comma-delimited list of possible values.
 
 Filter parameters **MUST** be able to be combined with other filters on the same collection.
 
+When multiple filters are provided, the results **MUST** match all specified filters.
+
 #### Examples
 
-Single value request:
+**Single value request**:
 `GET /v3/apps?names=the_name`
 
-Multiple value request:
+This will return all apps with name `the_name`.
+
+**Multiple value request**:
 `GET /v3/apps?names=first_name,second_name`
 
-Combined filters:
-`GET /v3/apps?names=the_name&space_guids=00112233-4455-6677-8899-aabbccddeeff`
+This will return all apps with name `the_name` OR `second_name`;
+
+**Combined filters**:
+`GET /v3/apps?names=the_name&state=STARTED`
+
+This will return all apps with name `the_name` AND state `STARTED`;
 
 ## Errors
 
