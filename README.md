@@ -649,12 +649,12 @@ This will return all apps with name `the_name`.
 **Multiple value request**:
 `GET /v3/apps?names=first_name,second_name`
 
-This will return all apps with name `the_name` OR `second_name`;
+This will return all apps with name `the_name` OR `second_name`.
 
 **Combined filters**:
 `GET /v3/apps?names=the_name&state=STARTED`
 
-This will return all apps with name `the_name` AND state `STARTED`;
+This will return all apps with name `the_name` AND state `STARTED`.
 
 ## Errors
 
