@@ -707,8 +707,10 @@ Resources **may** implement none, some, or all of the relationship operation lis
 Create an association between the resource being created and a single, existing resource.
 
 Example:
-```json
+```
 POST /v3/apps
+```
+```json
 {
   "name": "blah",
   "relationships": {
@@ -722,15 +724,19 @@ POST /v3/apps
 Create associations between the resource being created and several existing resources.
 
 Example:
-```json
+```
 POST /v3/apps
+```
+```json
 {
   "name": "blah",
   "relationships": {
-   "routes": { "data": [
-     { "guid": "2345" },
-     { "guid": "3456" }
-   ] },
+    "routes": {
+      "data": [
+        {"guid": "2345"},
+        {"guid": "3456"}
+      ]
+    }
   }
 }
 ```
