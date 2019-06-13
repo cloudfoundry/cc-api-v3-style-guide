@@ -671,6 +671,15 @@ Each error object in the list **MUST** include the following keys:
 * **title**: Human-readable unique descriptor for the class of error. Intended to help troubleshooting.
 * **code**:  Numerical, unique identifier for the class of error. Intended to help troubleshooting.
 
+### Error Messages
+
+Error messages should be descriptive and gramatically correct, so they can be surfaced by API clients without need for modification.
+
+Each error message **MUST**:
+- Start with a capital letter
+- Be one or more complete English sentences
+- Conclude with a full stop (`.`) 
+
 #### Example
 
 ```json
