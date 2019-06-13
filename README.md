@@ -56,8 +56,8 @@
 - [Errors](#errors)
   - [Status Codes](#status-codes)
   - [Response Body](#response-body)
+      - [Example](#example-7)
   - [Error Messages](#error-messages)
-    - [Example](#example-7)
 - [Relationships](#relationships)
   - [Relationships at Resource Creation](#relationships-at-resource-creation)
     - [To-One Relationships](#to-one-relationships)
@@ -673,6 +673,25 @@ Each error object in the list **MUST** include the following keys:
 * **title**: Human-readable unique descriptor for the class of error. Intended to help troubleshooting.
 * **code**:  Numerical, unique identifier for the class of error. Intended to help troubleshooting.
 
+#### Example
+
+```json
+{
+  "errors": [
+    {
+       "detail": "Relationships is not a hash.",
+       "title": "CF-UnprocessableEntity",
+       "code": 10008
+    },
+    {
+       "detail": "Name must be a string.",
+       "title": "CF-UnprocessableEntity",
+       "code": 10008
+    }
+  ]
+}
+```
+
 ### Error Messages
 
 Error messages should be descriptive and gramatically correct, so they can be surfaced by API clients without need for modification.
@@ -682,24 +701,6 @@ Each error message **MUST**:
 - Be one or more complete English sentences
 - Conclude with a full stop (`.`) 
 
-#### Example
-
-```json
-{
-  "errors": [
-    {
-       "detail": "Relationships is not a hash",
-       "title": "CF-UnprocessableEntity",
-       "code": 10008
-    },
-    {
-       "detail": "Name must be a string",
-       "title": "CF-UnprocessableEntity",
-       "code": 10008
-    }
-  ]
-}
-```
 
 ## Relationships
 
@@ -1047,12 +1048,12 @@ GET /v3/jobs/123
   "status": "Failed to fly to the sun",
   "errors": [
       {
-       "detail": "Wings are too waxy",
+       "detail": "Wings are too waxy.",
        "title": "CF-UnprocessableEntity",
        "code": 10008
     },
     {
-       "detail": "Hubris is too high",
+       "detail": "Hubris is too high.",
        "title": "CF-UnprocessableEntity",
        "code": 10008
     }
