@@ -442,12 +442,14 @@ Actions are API requests that are expected to initiate change within the Cloud F
 
 Actions **MUST** use use POST as their HTTP verb.
 
+Actions **MUST** be nested under the `/actions` path for a resource
+
 Actions **may** accept a request body.
 
 Actions **MUST** be listed in the `links` for the related resource.
 
 ### Example
- `POST /v3/apps/:guid/start`
+ `POST /v3/apps/:guid/actions/start`
  
 
 ## Field Names
