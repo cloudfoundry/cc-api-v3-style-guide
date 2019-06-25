@@ -84,6 +84,8 @@
   - [Sparse Fields](#sparse-fields)
   - [Hidden Fields](#hidden-fields)
   - [Proposal: Fields For Sub-Resources](#proposal-fields-for-sub-resources)
+- [Proposal: Mass Deletes](#proposal-mass-deletes)
+
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Overview
@@ -1136,3 +1138,15 @@ GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
   }
 }
 ```
+
+## Proposal: Mass Deletes
+
+Currently, users can only delete resources one-by-one or as part of a cascading delete. This would enable users to delete multiple matching resources with a single request.
+
+**Example:**
+```json
+DELETE /v3/spaces/:guid/routes
+
+202 Accepted
+```
+
