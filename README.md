@@ -628,22 +628,32 @@ Single value:
 
 Multiple values:
  `GET /v3/apps?names=firstname,secondname`
- 
+
 Single value with comma:
  `GET /v3/apps?names=comma%2Cname`
 
 
 ## Filtering
 
-Filtering is the use of query parameters to return a subset of resources within a [Collection](#collections).
+Filtering is the use of query parameters to return a subset of resources within
+a [Collection](#collections).
 
-Filter query parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
+Filter query parameters **MUST** have names that conform to the acceptable
+[query parameter](#query-parameters) names.
 
-Filters **MUST** allow a client to request resources matching multiple values by accepting a comma-delimited list of possible values.
+Filters **MUST** allow a client to request resources matching multiple values by
+accepting a comma-delimited list of possible values.
 
-Filter parameters **MUST** be able to be combined with other filters on the same collection.
+Filter parameters **MUST** be able to be combined with other filters on the same
+collection.
 
-When multiple filters are provided, the results **MUST** match all specified filters.
+When multiple filters are provided, the results **MUST** match all specified
+filters.
+
+Empty filters (`/v3/apps?names=` or `/v3/buildpacks?stack=cflinuxfs2,`) matches
+on [Active Support's definition of
+blank](https://guides.rubyonrails.org/active_support_core_extensions.html#blank-questionmark-and-present-questionmark)
+meaning that `nil`, `""` and `[]` will be valid matches for the empty filter.
 
 #### Examples
 
@@ -661,6 +671,16 @@ This will return all apps with name `the_name` OR `second_name`.
 `GET /v3/apps?names=the_name&state=STARTED`
 
 This will return all apps with name `the_name` AND state `STARTED`.
+
+**Empty filters when resource has `NULLs`**:
+`GET /v3/buildpacks?stack=`
+
+This will return all buidpacks with stack `NULL`.
+
+**Empty filters when resource has empty strings (`""`)**:
+`GET /v3/routes?path=pepper,,tabi`
+
+This will return all routes with path `"pepper"`, `""` OR `"tabi"`.
 
 ## Errors
 
