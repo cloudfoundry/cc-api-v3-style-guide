@@ -675,7 +675,7 @@ This will return all apps with name `the_name` AND state `STARTED`.
 **Empty filters when resource has `NULLs`**:
 `GET /v3/buildpacks?stack=`
 
-This will return all buidpacks with stack `NULL`.
+This will return all buildpacks with stack `NULL`.
 
 **Empty filters when resource has empty strings (`""`)**:
 `GET /v3/routes?path=pepper,,tabi`
