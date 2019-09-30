@@ -725,7 +725,6 @@ Each error message **MUST**:
 - Be one or more complete English sentences
 - Conclude with a full stop (`.`) 
 
-
 ## Relationships
 
 Relationships represent named associations between resources. Relationships can be used to create, read, update, and delete associations through the relationship sub resource.
@@ -1081,6 +1080,34 @@ GET /v3/jobs/123
        "title": "CF-UnprocessableEntity",
        "code": 10008
     }
+  ],
+  "links": {
+    "self": {
+      "href": "https://api.example.org/v3/jobs/123"
+    }
+  }
+}
+```
+
+### Viewing Warnings from Async Actions
+
+The job resource **MAY** surface any warnings that occur during the async operation.
+
+```json
+GET /v3/jobs/123
+200 OK
+
+{
+  "state": "COMPLETED",
+  "operation": "hitchhiking.galaxy",
+  "status": "done",
+  "warnings": [
+      {
+       "detail": "don't panic",
+      },
+      {
+       "detail": "bring your towel",
+      },
   ],
   "links": {
     "self": {
