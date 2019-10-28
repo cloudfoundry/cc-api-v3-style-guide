@@ -80,6 +80,7 @@
   - [Triggering Async Actions](#triggering-async-actions)
   - [Monitoring Async Actions](#monitoring-async-actions)
   - [Viewing Errors from Async Actions](#viewing-errors-from-async-actions)
+  - [Viewing Warnings from Async Actions](#viewing-warnings-from-async-actions)
 - [Proposal: Requesting Specific Fields Resources](#proposal-requesting-specific-fields-resources)
   - [Sparse Fields](#sparse-fields)
   - [Hidden Fields](#hidden-fields)
@@ -1028,6 +1029,7 @@ GET /v3/jobs/123
   "state": "PROCESSING",
   "operation": "service_instance.create",
   "status": "Warming the shards",
+  "warnings": [],
   "links": {
     "self": {
       "href": "https://api.example.org/v3/jobs/123"
@@ -1046,6 +1048,7 @@ GET /v3/jobs/123
   "state": "COMPLETE",
   "operation": "splines.reticulate",
   "status": "Splines successfully reticulated",
+  "warnings": [],
   "links": {
     "self": {
       "href": "https://api.example.org/v3/jobs/123"
@@ -1081,6 +1084,7 @@ GET /v3/jobs/123
        "code": 10008
     }
   ],
+  "warnings": [],
   "links": {
     "self": {
       "href": "https://api.example.org/v3/jobs/123"
@@ -1116,6 +1120,8 @@ GET /v3/jobs/123
   }
 }
 ```
+
+When there are no warnings, `warnings` field will have a value of an empty array.
 
 ##  Proposal: Requesting Specific Fields Resources
 
