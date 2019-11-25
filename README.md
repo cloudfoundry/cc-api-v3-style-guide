@@ -329,9 +329,11 @@ PATCH /v3/apps/:guid
 Used to delete a resource.
 
 * DELETE requests **may** include query parameters
-* DELETE requests **must NOT** include a request body
+* DELETE requests **must NOT** include a request body †
 * Deleting a resource **may** also recursively delete associated resources.
 * Deleting a resource **may** occur syncronously or [asyncronously](#asynchronicity)
+
+> † Some load balancers remove bodies from DELETE requests. Since the API could be running behind any load balancer, we cannot depend on DELETE requests with bodies.
 
 #### Examples
 Delete a resource:
@@ -857,6 +859,8 @@ Remove the association between a resource and another resource for the given rel
 ```json
 DELETE /v3/apps/:app_guid/relationships/routes/:route_guid
 ```
+
+> Note: Some load balancers remove request bodies from DELETE requests. Because of this, we cannot support atomically removing more than one resource in a single request.
 
 ##### Replacing All
 
