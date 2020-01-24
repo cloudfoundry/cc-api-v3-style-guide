@@ -347,9 +347,10 @@ DELETE /v3/apps/:guid
 |---|---|---|
 | Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
 | Authorized User (sync) | 204 | N/A |
-| Missing Resource | 204 | N/A |
-| Read-only User | 403 | Error |
-| Unauthorized User | 404 | Error |
+| Missing Resource | 404† | N/A |
+| Read-only User | 403† | Error |
+| Unauthorized User | 404† | Error |
+> † See [404 vs 403](#404-vs-403) for details on response for DELETE verb
 
 ## Response Codes
 
