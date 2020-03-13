@@ -56,7 +56,7 @@
 - [Errors](#errors)
   - [Status Codes](#status-codes)
   - [Response Body](#response-body)
-      - [Example](#example-7)
+    - [Example](#example-7)
   - [Error Messages](#error-messages)
 - [Relationships](#relationships)
   - [Relationships at Resource Creation](#relationships-at-resource-creation)
@@ -76,6 +76,7 @@
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
   - [Proposal: Pagination of Related Resources](#proposal-pagination-of-related-resources)
+- [GUID Hiding](#guid-hiding)
 - [Asynchronicity](#asynchronicity)
   - [Triggering Async Actions](#triggering-async-actions)
   - [Monitoring Async Actions](#monitoring-async-actions)
@@ -87,9 +88,10 @@
   - [Proposal: Fields For Sub-Resources](#proposal-fields-for-sub-resources)
 - [Proposal: Mass Deletes](#proposal-mass-deletes)
 
-
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Overview
+
 This document serves as a style guide for version 3 of the Cloud Controller API. It is intended to act as a repository for patterns and best practices when designing and developing new API endpoints.
 
 This is a living document; It will change over time as we learn more about our users and develop features.
@@ -1001,6 +1003,15 @@ The pagination data **may** be excluded if all results are included in the respo
   }
 }
 ```
+
+## GUID Hiding
+
+Resources that are visible to any given user may have relationships/links with other resources that that user does not have read access for.
+
+In these cases, the following rules apply:
+1. If the resource is scoped to a particular organization/space and is shared to a different organization/space, then the owning organization/space guid will be visible.
+1. In all other cases, users will not be able to see the guids of resources that they otherwise do not have read access for.
+
 ## Asynchronicity
 
 Individual endpoints are responsible for behaving either asynchronously (return 202 status code) or synchronously (return non-202 status code).
