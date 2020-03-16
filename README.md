@@ -1191,9 +1191,22 @@ GET /apps/:guid?fields=expensive_field
 }
 ```
 
-### Proposal: Fields For Sub-Resources
+### Fields For Sub-Resources
 
-If we want to be able to filter the fields of included resources, we could do something like:
+This is a mechanism for including multiple fields of related resources in a single response.
+
+Resources and collections **may** accept a `fields[path]` query parameter for each related resources with a list of resource fields. 
+
+Each resource path **MUST** be a series of period-separated relationship names. For example: `app.space.organization`. 
+
+The list of resource fields **MUST** be comma delimited. For example: `fields[space]=name&fields[space.organization]=name,guid`.
+
+Included resource fields **MUST** be returned in an `included` object on the primary resource or collection.
+
+Duplicate included resources **MUST NOT** be repeated. For example: Listing multiple apps in the same space with `fields[space]=name` will only return the space once.
+
+Requesting fields in a resource **MUST** only return the requested fields in the include object. Requesting fields in a collection **MAY** include extra fields necesary for full linkage. 
+
 ```json
 GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
 
@@ -1205,6 +1218,79 @@ GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
       "guid": "droplet-guid"
     }
   }
+}
+```
+
+
+```json
+GET /v3/service_instances?fields[service_plan.service_offering]=name
+
+{
+	"resources": [
+        {
+			"name": "my-managed-instance",
+			"relationships": {
+				"space": {
+					"data": {
+						"guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
+						"name": "space-name"
+					}
+				},				
+                "service_plan": {
+					"data": {
+						"guid": "123a384b-2b6a-4535-a663-ae018b23f76b",
+						"name": "plan-one"
+					}
+				}
+			}
+		},
+		{
+			"name": "my-other-managed-instance",
+			"relationships": {
+				"space": {
+					"data": {
+						"guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
+						"name": "space-name"
+					}
+				},				
+                "service_plan": {
+					"data": {
+						"guid": "abca384b-2b6a-4535-a663-ae018b23f76b",
+						"name": "plan-two"
+					}
+				}
+			}
+		},
+	],
+	"included": {
+		"service_plans": [
+            {
+                "guid": "123a384b-2b6a-4535-a663-ae018b23f76b"
+                "relationships": {
+                    "service_offering": {
+                        "data": {
+                            "guid": "13c60e38-11e7-11ea-9106-33ee3c5bd4d7"
+                        }
+                    }
+                }
+            },
+            {
+                "guid": "abca384b-2b6a-4535-a663-ae018b23f76b"
+                "relationships": {
+                    "service_offering": {
+                        "data": {
+                            "guid": "13c60e38-11e7-11ea-9106-33ee3c5bd4d7"
+                        }
+                    }
+                }
+            }
+        ],
+		"service_offerings": [
+            {
+                "name": "offering-name"
+		    }
+        ]
+	}
 }
 ```
 
