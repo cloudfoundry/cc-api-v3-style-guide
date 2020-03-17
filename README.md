@@ -1226,46 +1226,46 @@ GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
 GET /v3/service_instances?fields[service_plan.service_offering]=name
 
 {
-	"resources": [
+    "resources": [
         {
-			"name": "my-managed-instance",
-			"relationships": {
-				"space": {
-					"data": {
-						"guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
-						"name": "space-name"
-					}
-				},				
+            "name": "my-managed-instance",
+            "relationships": {
+                "space": {
+                    "data": {
+                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
+                        "name": "space-name"
+                    }
+                },
                 "service_plan": {
-					"data": {
-						"guid": "123a384b-2b6a-4535-a663-ae018b23f76b",
-						"name": "plan-one"
-					}
-				}
-			}
-		},
-		{
-			"name": "my-other-managed-instance",
-			"relationships": {
-				"space": {
-					"data": {
-						"guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
-						"name": "space-name"
-					}
-				},				
+                    "data": {
+                        "guid": "123a384b-2b6a-4535-a663-ae018b23f76b",
+                        "name": "plan-one"
+                    }
+                }
+            }
+        },
+        {
+            "name": "my-other-managed-instance",
+            "relationships": {
+                "space": {
+                    "data": {
+                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
+                        "name": "space-name"
+                    }
+                },
                 "service_plan": {
-					"data": {
-						"guid": "abca384b-2b6a-4535-a663-ae018b23f76b",
-						"name": "plan-two"
-					}
-				}
-			}
-		},
-	],
-	"included": {
-		"service_plans": [
+                    "data": {
+                        "guid": "abca384b-2b6a-4535-a663-ae018b23f76b",
+                        "name": "plan-two"
+                    }
+                }
+            }
+        }
+    ],
+    "included": {
+        "service_plans": [
             {
-                "guid": "123a384b-2b6a-4535-a663-ae018b23f76b"
+                "guid": "123a384b-2b6a-4535-a663-ae018b23f76b",
                 "relationships": {
                     "service_offering": {
                         "data": {
@@ -1275,7 +1275,7 @@ GET /v3/service_instances?fields[service_plan.service_offering]=name
                 }
             },
             {
-                "guid": "abca384b-2b6a-4535-a663-ae018b23f76b"
+                "guid": "abca384b-2b6a-4535-a663-ae018b23f76b",
                 "relationships": {
                     "service_offering": {
                         "data": {
@@ -1285,13 +1285,13 @@ GET /v3/service_instances?fields[service_plan.service_offering]=name
                 }
             }
         ],
-		"service_offerings": [
+        "service_offerings": [
             {
-	        "guid": "13c60e38-11e7-11ea-9106-33ee3c5bd4d7",
+                "guid": "13c60e38-11e7-11ea-9106-33ee3c5bd4d7",
                 "name": "offering-name"
-		    }
+            }
         ]
-	}
+    }
 }
 ```
 
