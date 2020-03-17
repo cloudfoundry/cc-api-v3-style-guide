@@ -1287,6 +1287,7 @@ GET /v3/service_instances?fields[service_plan.service_offering]=name
         ],
 		"service_offerings": [
             {
+	        "guid": "13c60e38-11e7-11ea-9106-33ee3c5bd4d7",
                 "name": "offering-name"
 		    }
         ]
