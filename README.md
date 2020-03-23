@@ -1199,13 +1199,13 @@ Resources and collections **may** accept a `fields[path]` query parameter for ea
 
 Each resource path **MUST** be a series of period-separated relationship names. For example: `app.space.organization`. 
 
-The list of resource fields **MUST** be comma delimited. For example: `fields[space]=name&fields[space.organization]=name,guid`.
+The list of resource fields **MUST** be comma delimited. For example: `fields[space.organization]=name,guid`.
 
 Included resource fields **MUST** be returned in an `included` object on the primary resource or collection.
 
 Duplicate included resources **MUST NOT** be repeated. For example: Listing multiple apps in the same space with `fields[space]=name` will only return the space once.
 
-Requesting fields in a resource **MUST** only return the requested fields in the include object. Requesting fields in a collection **MAY** include extra fields necesary for full linkage. 
+Requesting fields in a resource or collection **MUST** only return the requested fields in the include object.
 
 ```json
 GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
@@ -1221,7 +1221,6 @@ GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
 }
 ```
 
-
 ```json
 GET /v3/service_instances?fields[service_plan.service_offering]=name
 
@@ -1232,14 +1231,12 @@ GET /v3/service_instances?fields[service_plan.service_offering]=name
             "relationships": {
                 "space": {
                     "data": {
-                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
-                        "name": "space-name"
+                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b"
                     }
                 },
                 "service_plan": {
                     "data": {
-                        "guid": "123a384b-2b6a-4535-a663-ae018b23f76b",
-                        "name": "plan-one"
+                        "guid": "123a384b-2b6a-4535-a663-ae018b23f76b"
                     }
                 }
             }
@@ -1249,14 +1246,58 @@ GET /v3/service_instances?fields[service_plan.service_offering]=name
             "relationships": {
                 "space": {
                     "data": {
-                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b",
-                        "name": "space-name"
+                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b"
                     }
                 },
                 "service_plan": {
                     "data": {
-                        "guid": "abca384b-2b6a-4535-a663-ae018b23f76b",
-                        "name": "plan-two"
+                        "guid": "abca384b-2b6a-4535-a663-ae018b23f76b"
+                    }
+                }
+            }
+        }
+    ],
+    "included": {
+        "service_offerings": [
+            {
+                "name": "offering-name"
+            }
+        ]
+    }
+}
+```
+
+```json
+GET /v3/service_instances?fields[service_plan]=guid,relationships.service_offering&fields[service_plan.service_offering]=name,guid
+
+{
+    "resources": [
+        {
+            "name": "my-managed-instance",
+            "relationships": {
+                "space": {
+                    "data": {
+                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b"
+                    }
+                },
+                "service_plan": {
+                    "data": {
+                        "guid": "123a384b-2b6a-4535-a663-ae018b23f76b"
+                    }
+                }
+            }
+        },
+        {
+            "name": "my-other-managed-instance",
+            "relationships": {
+                "space": {
+                    "data": {
+                        "guid": "ba0a384b-2b6a-4535-a663-ae018b23f76b"
+                    }
+                },
+                "service_plan": {
+                    "data": {
+                        "guid": "abca384b-2b6a-4535-a663-ae018b23f76b"
                     }
                 }
             }
