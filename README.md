@@ -360,7 +360,7 @@ DELETE /v3/apps/:guid
 
 |Status Code|Description|Verbs|
 |---|---|---|
-|200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This **MUST** only be used if there is not a more appropriate 2XX response code. |GET, PATCH|
+|200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This **MUST** only be used if there is not a more appropriate 2XX response code. |GET, PATCH, POST (for actions)|
 |201 Created|This status **MUST** be returned for synchronous requests that result in the creation of a new resource.|POST|
 |202 Accepted|This status **MUST** be returned for requests that have been successfully accepted and will be asynchronously completed at a later time. See more in the [async](#asynchronicity) section. |POST, PATCH, DELETE|
 |204 No Content|This status **MUST** be returned for synchronous requests that complete successfully and have no response body.|DELETE
