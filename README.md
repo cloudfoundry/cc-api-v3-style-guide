@@ -53,6 +53,7 @@
     - [Examples](#examples-4)
 - [Filtering](#filtering)
     - [Examples](#examples-5)
+  - [Filtering on Inequalities (Proposal)](#filtering-on-inequalities-proposal)
 - [Errors](#errors)
   - [Status Codes](#status-codes)
   - [Response Body](#response-body)
@@ -687,6 +688,30 @@ This will return all buildpacks with stack `NULL`.
 `GET /v3/routes?path=pepper,,tabi`
 
 This will return all routes with path `"pepper"`, `""` OR `"tabi"`.
+
+### Filtering on Inequalities (Proposal)
+
+Resources **MAY** support filtering on inequalities for some fields.
+
+**Strictly Less Than**:
+`GET /v3/processes?instances[lt]=5`
+
+This will return all processes with less than 5 instances.
+
+**Less Than or Equal To**:
+`GET /v3/processes?instances[lte]=5`
+
+This will return all processes with less than 5 instances or exactly 5 instances.
+
+**Strictly Greater Than**:
+`GET /v3/processes?instances[gt]=5`
+
+This will return all processes with greater than 5 instances.
+
+**Greater Than or Equal To**:
+`GET /v3/processes?instances[gte]=5`
+
+This will return all processes with greater than 5 instances or exactly 5 instances.
 
 ## Errors
 
