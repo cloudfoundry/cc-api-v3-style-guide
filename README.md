@@ -54,6 +54,7 @@
 - [Filtering](#filtering)
     - [Examples](#examples-5)
   - [Filtering on Inequalities (Proposal)](#filtering-on-inequalities-proposal)
+  - [Filtering on Non-Equality (Proposal)](#filtering-on-non-equality-proposal)
 - [Errors](#errors)
   - [Status Codes](#status-codes)
   - [Response Body](#response-body)
@@ -713,6 +714,14 @@ This will return all processes with greater than 5 instances.
 `GET /v3/processes?instances[gte]=5`
 
 This will return all processes with greater than 5 instances or exactly 5 instances.
+
+### Filtering on Non-Equality (Proposal)
+
+Resources **MAY** support filtering on inequalities for some fields.
+
+`GET /v3/apps?names[not]=my-app`
+
+This will return all apps with names other than `my-app`.
 
 ## Errors
 
