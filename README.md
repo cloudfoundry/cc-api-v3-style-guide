@@ -132,13 +132,13 @@ Here is the respective response body:
     "total_results": 3,
     "total_pages": 2,
     "first": {
-      "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=1&per_page=2"
+      "href": "http://api.example.com/v3/apps?names=dora,kailan&order_by=created_at&page=1&per_page=2"
     },
     "last": {
-      "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=2&per_page=2"
+      "href": "http://api.example.com/v3/apps?names=dora,kailan&order_by=created_at&page=2&per_page=2"
     },
     "next": {
-      "href": "/v3/apps?names=dora,kailan&order_by=created_at&page=2&per_page=2"
+      "href": "http://api.example.com/v3/apps?names=dora,kailan&order_by=created_at&page=2&per_page=2"
     },
     "previous": null
   },
@@ -432,7 +432,7 @@ A resource **MUST** include a `self` link object in the `links` field.
 
   "links": {
     "self": {
-      "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff"
+      "href": "http://api.example.com/v3/apps/00112233-4455-6677-8899-aabbccddeeff"
     }
   }
 }
@@ -500,16 +500,16 @@ A link **may** contain a `method` field, containing the HTTP verb that must be u
 {
   "links": {
     "self": {
-      "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff"
+      "href": "http://api.example.com/v3/apps/00112233-4455-6677-8899-aabbccddeeff"
     },
     "space": {
-      "href": "/v3/spaces/123e4567-e89b-12d3-a456-426655440000"
+      "href": "http://api.example.com/v3/spaces/123e4567-e89b-12d3-a456-426655440000"
     },
     "current_droplet": {
-      "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff/relationships/current_droplet"
+      "href": "http://api.example.com/v3/apps/00112233-4455-6677-8899-aabbccddeeff/relationships/current_droplet"
     },
     "start": {
-      "href": "/v3/apps/00112233-4455-6677-8899-aabbccddeeff/start",
+      "href": "http://api.example.com/v3/apps/00112233-4455-6677-8899-aabbccddeeff/start",
       "method": "PUT"
     }
   }
@@ -535,7 +535,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
       "links": {
         "self": {
-          "href": "/v3/apps/a-b-c"
+          "href": "http://api.example.com/v3/apps/a-b-c"
         }
       }
     },
@@ -546,7 +546,7 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
       "links": {
         "self": {
-          "href": "/v3/apps/d-e-f"
+          "href": "http://api.example.com/v3/apps/d-e-f"
         }
       }
     }
@@ -555,10 +555,10 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
     "total_results": 2,
     "total_pages": 1,
     "first": {
-      "href": "/v3/apps?page=1&per_page=10"
+      "href": "http://api.example.com/v3/apps?page=1&per_page=10"
     },
     "last": {
-      "href": "/v3/apps?page=1&per_page=10"
+      "href": "http://api.example.com/v3/apps?page=1&per_page=10"
     },
     "next": null,
     "previous": null
@@ -604,13 +604,13 @@ Pagination URLs **MUST** include _all_ query parameters required to maintain con
   "total_results": 20,
   "total_pages": 2,
   "first": {
-    "href": "/v3/apps?order_by=-created_at&page=1&per_page=10"
+    "href": "http://api.example.com/v3/apps?order_by=-created_at&page=1&per_page=10"
   },
   "last": {
-    "href": "/v3/apps?order_by=-created_at&page=2&per_page=10"
+    "href": "http://api.example.com/v3/apps?order_by=-created_at&page=2&per_page=10"
   },
   "next": {
-    "href": "/v3/apps?order_by=-created_at&page=2&per_page=10"
+    "href": "http://api.example.com/v3/apps?order_by=-created_at&page=2&per_page=10"
   },
   "previous": null
 }
