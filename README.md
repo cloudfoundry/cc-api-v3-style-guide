@@ -76,7 +76,8 @@
       - [Clearing All](#clearing-all)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Proposal: Pagination of Related Resources](#proposal-pagination-of-related-resources)
+  - [Proposal: Pagination of Included Resources](#proposal-pagination-of-included-resources)
+    - [Pagination Links](#pagination-links)
 - [GUID Hiding](#guid-hiding)
 - [Asynchronicity](#asynchronicity)
   - [Triggering Async Actions](#triggering-async-actions)
@@ -459,7 +460,7 @@ Actions **MUST** be listed in the `links` for the related resource.
 
 ### Example
  `POST /v3/apps/:guid/actions/start`
- 
+
 
 ## Field Names
 
@@ -937,8 +938,10 @@ Included resources **MUST** be returned in an `included` object on the primary r
 
 Duplicate included resources **MUST NOT** be repeated. For example: Listing multiple apps in the same space with `include=space` will only return the space once.
 
-```json
+```
 GET /v3/apps?include=space,space.organization
+```
+```json
 {
   "pagination": {
     "total_results": 2,
@@ -989,45 +992,94 @@ GET /v3/apps?include=space,space.organization
   }
 }
 ```
-### Proposal: Pagination of Related Resources
+### Proposal: Pagination of Included Resources
 
 > Note: This is a proposal and is not currently implemented on any API endpoints
 
-For some requests (especially to-many relationships), there may be more related resources than can be returned in a single response.
+When including to-many relationships, there may be more related resources than can be returned in a single response. In that case, only the first page of the included resources will be returned.
 
-Related resources are paginated in a similar style to how normal responses are paginated.  
-The pagination data **may** be excluded if all results are included in the response.
-
-`GET /v3/apps/:guid?include=routes`
+```
+GET /v3/spaces/:guid?include=apps
+```
 
 ```json
 {
-  "guid": "guid",
-  
+  "guid": "space-guid",
+  "...": "...",
+  "relationships": {
+    "apps": {
+      "data": [
+        {"guid": "app-guid-1"},
+        "...",
+        {"guid": "app-guid-100"}
+      ]
+    }
+  },
   "included": {
-    "routes": {
+    "apps": {
       "resources": [
-        {"guid": "1"},
-        {"guid": "2"}
-      ],
-      "pagination": {
-        "total_results": 20,
-        "total_pages": 2,
-        "first": {
-          "href": "https://api.example.com/v3/apps/:guid/routes?page=1&per_page=2"
-        },
-        "last": {
-          "href": "https://api.example.com/v3/apps/:guid/routes?page=10&per_page=2"
-        },
-        "next": {
-          "href": "https://api.example.com/v3/apps/:guid/routes?page=2&per_page=2"
-        },
-        "previous": null
-      }
+        {"guid": "app-guid-1"},
+        "...",
+        {"guid": "app-guid-10"}
+      ]
     }
   }
 }
 ```
+
+The included resources are paginated using pagination filters for each included resource:
+
+```
+GET /v3/spaces/:guid?include=apps&page[apps]=10
+```
+```json
+{
+  "guid": "space-guid",
+  "...": "...",
+  "relationships": {
+    "apps": {
+      "data": [
+        {"guid": "app-guid-1"},
+        "...",
+        {"guid": "app-guid-100"}
+      ]
+    }
+  },
+  "included": {
+    "apps": {
+      "resources": [
+        {"guid": "app-guid-90"},
+        "...",
+        {"guid": "app-guid-100"}
+      ]
+    }
+  }
+}
+```
+
+#### Pagination Links
+
+The pagination filters for included resources are included in the top-level pagination links. The `next` pagination links will page through all included resources before moving to the next page of the root resource.
+
+```json
+{
+  "pagination": {
+    "...": "...",
+    "first": {
+      "href": "https://api.example.com/v3/spaces?include=apps&page=1&page[apps]=1"
+    },
+    "last": {
+      "href": "https://api.example.com/v3/spaces?include=apps&page=10&page[apps]=10"
+    },
+    "next": {
+      "href": "https://api.example.com/v3/spaces?include=apps&page=1&page[apps]=2"
+    },
+    "previous": null
+  }
+}
+```
+
+
 
 ## GUID Hiding
 
