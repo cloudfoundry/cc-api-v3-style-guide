@@ -17,18 +17,29 @@
   - [URL Structure](#url-structure)
   - [GET](#get)
     - [Examples](#examples)
-      - [Responses (Resource)](#responses-resource)
-      - [Responses (Collection)](#responses-collection)
+      - [Show Individual Resource](#show-individual-resource)
+      - [List Collection of Resources](#list-collection-of-resources)
+    - [Responses](#responses)
+      - [Show Resource](#show-resource)
+      - [List Collection](#list-collection)
   - [POST](#post)
     - [Examples](#examples-1)
-      - [Responses](#responses)
+      - [Create a Resource](#create-a-resource)
+      - [Trigger an Action](#trigger-an-action)
+    - [Responses](#responses-1)
+      - [Create Resource](#create-resource)
+      - [Trigger Action](#trigger-action)
   - [PUT](#put)
   - [PATCH](#patch)
     - [Examples](#examples-2)
-      - [Responses](#responses-1)
+      - [Partially Update a Resource](#partially-update-a-resource)
+    - [Responses](#responses-2)
+      - [Update a Resource](#update-a-resource)
   - [DELETE](#delete)
     - [Examples](#examples-3)
-      - [Responses](#responses-2)
+      - [Delete a Resource](#delete-a-resource)
+    - [Responses](#responses-3)
+      - [Delete Resource](#delete-resource)
 - [Response Codes](#response-codes)
   - [Successful Requests](#successful-requests)
   - [Redirection](#redirection)
@@ -108,7 +119,9 @@ This is a living document; It will change over time as we learn more about our u
 
 ### API Technologies
 * **HTTP:** All API requests **MUST** be made over HTTP.
-* **JSON & YAML:** All API request and response bodies will be JSON or YAML objects (depending on the endpoint).
+* **JSON:** Most API request and response bodies will be JSON objects.
+* **YAML:** Some API requests and response bodies will be YAML objects.
+* **Multipart Form Data:** API request bodies requiring file uploads will be multipart form data.
 
 ### API Design Inspirations
 * **REST:**  https://en.wikipedia.org/wiki/Representational_state_transfer
@@ -222,7 +235,6 @@ Here is the respective response body:
 ### URL Structure
 
 All endpoints **MUST** be prefixed with `/v3/`.
-Pattern: `/v3/...`  
 
 Collections of resources are referenced by their resource name (plural)  
 Pattern: `/v3/:resource_name`  
@@ -239,22 +251,30 @@ Retrieve a single resource or a list of resources. **MUST** be idempotent.
 * GET requests **MUST NOT** include a request body
 
 #### Examples
-**Show individual resource:**
+
+##### Show Individual Resource
+
 ```
 GET /v3/apps/:guid
 ```
 
-##### Responses (Resource)
+##### List Collection of Resources
+
+```
+GET /v3/apps
+```
+
+#### Responses
+
+##### Show Resource
 |Scenario|Code|Body|
 |---|---|---|
 | Authorized User | 200 | Resource |
 | Unauthorized User | 404 | Error |
+| Nonexistent Resource | 404 | Error |
 
-**List collection of resources:**
-```
-GET /v3/apps/
-```
-##### Responses (Collection)
+##### List Collection
+
 |Scenario|Code|Body|
 |---|---|---|
 | User With Complete Visibility | 200 | List of All Resources |
@@ -262,29 +282,28 @@ GET /v3/apps/
 | User With No Visibility | 200 | Empty List |
 
 ### POST
-Used to create a resource or trigger an [action](#actions).
+Used to create a resource, upload a file, or trigger an [action](#actions).
 
 * POST requests **MUST NOT** include query parameters
 * POST requests **MAY** include a request body
 
 #### Examples
 
-**Create a resource:**
+##### Create a Resource
 
 ```
-POST /v3/apps/
+POST /v3/apps
 ```
 ```json
 {
-  "name": "cool_app",
-  "space_guid": "123guid"
+  "name": "example_app"
 }
 ```
 
-**Trigger an action:**
+##### Trigger an Action
 
 ```
-POST /v3/processes/:guid/scale
+POST /v3/processes/:guid/actions/scale
 ```
 ```json
 {
@@ -293,14 +312,25 @@ POST /v3/processes/:guid/scale
 }
 ```
 
-##### Responses
-|Scenario|Code(s)|Body|
+#### Responses
+
+##### Create Resource
+
+| Scenario                                          | Code | Body                            |
+| ------------------------------------------------- | ---- | ------------------------------- |
+| Authorized User (Synchronous)                     | 201  | Created Resource                |
+| Authorized User [(Asynchronous)](#asynchronicity) | 202  | Empty w/ Location Header -> Job |
+| Unauthorized User                                 | 403  | Error                           |
+
+##### Trigger Action
+
+|Scenario|Code|Body|
 |---|---|---|
-| Authorized User (sync action) | 200 | Resource |
-| Authorized User (sync create) | 201 | Created Resource |
-| Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
-| Read-only User | 403 | Error |
-| Unauthorized User | 403 | Error |
+| Authorized User (Synchronous) | 200 | Resource |
+| Authorized User [(Asynchronous)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
+| Read-Only User | 403 | Error |
+| Unauthorized User | 404 | Error |
+| Nonexistent Resource | 404 | Error |
 
 ### PUT
 Not used. To update a resource, use [PATCH](#patch)
@@ -313,7 +343,7 @@ Used to update a portion of a resource.
 * PATCH operations **MUST** apply all requested updates or none.
 
 #### Examples
-Partially update a resource:
+##### Partially Update a Resource
 
 ```
 PATCH /v3/apps/:guid
@@ -324,14 +354,17 @@ PATCH /v3/apps/:guid
 }
 ```
 
-##### Responses
-|Scenario|Code(s)|Body|
+#### Responses
+
+##### Update a Resource
+
+|Scenario|Code|Body|
 |---|---|---|
-| Authorized User (sync) | 200 | Updated Resource |
-| Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
-| Read-only User | 403 | Error |
+| Authorized User (Synchronous) | 200 | Updated Resource |
+| Authorized User [(Asynchronous)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
+| Read-Only User | 403 | Error |
 | Unauthorized User | 404 | Error |
-| Missing Resource | 404 | Error |
+| Nonexistent Resource | 404 | Error |
 
 ### DELETE
 Used to delete a resource.
@@ -344,21 +377,23 @@ Used to delete a resource.
 > † Some load balancers remove bodies from DELETE requests. Since the API could be running behind any load balancer, we cannot depend on DELETE requests with bodies.
 
 #### Examples
-Delete a resource:
+##### Delete a Resource
 
 ```
 DELETE /v3/apps/:guid
 ```
 
-##### Responses
-|Scenario|Code(s)|Body|
+#### Responses
+
+##### Delete Resource
+
+|Scenario|Code|Body|
 |---|---|---|
-| Authorized User [(async)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
-| Authorized User (sync) | 204 | N/A |
-| Missing Resource | 404† | N/A |
-| Read-only User | 403† | Error |
-| Unauthorized User | 404† | Error |
-> † See [404 vs 403](#404-vs-403) for details on response for DELETE verb
+| Authorized User [(Asynchronous)](#asynchronicity) | 202 | Empty w/ Location Header -> Job |
+| Authorized User (Synchronous) | 204 | Empty |
+| Read-only User | 403 | Error |
+| Unauthorized User | 404 | Error |
+| Nonexistent Resource | 404 | Error |
 
 ## Response Codes
 
