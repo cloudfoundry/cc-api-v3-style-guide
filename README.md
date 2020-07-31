@@ -3,7 +3,7 @@
 
 # Cloud Controller API v3 Style Guide
 
-## Table of contents
+## Table of Contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -14,7 +14,7 @@
   - [API Design Inspirations](#api-design-inspirations)
   - [Overview Example](#overview-example)
 - [Requests](#requests)
-  - [URL structure](#url-structure)
+  - [URL Structure](#url-structure)
   - [GET](#get)
     - [Examples](#examples)
       - [Responses (Resource)](#responses-resource)
@@ -77,7 +77,7 @@
       - [Clearing All](#clearing-all)
 - [Nested Resources](#nested-resources)
 - [Including Related Resources](#including-related-resources)
-  - [Proposal: Pagination of Included Resources](#proposal-pagination-of-included-resources)
+  - [Pagination of Included Resources (Proposal)](#pagination-of-included-resources-proposal)
     - [Pagination Links](#pagination-links)
 - [GUID Hiding](#guid-hiding)
 - [Asynchronicity](#asynchronicity)
@@ -85,7 +85,7 @@
   - [Monitoring Async Actions](#monitoring-async-actions)
   - [Viewing Errors from Async Actions](#viewing-errors-from-async-actions)
   - [Viewing Warnings from Async Actions](#viewing-warnings-from-async-actions)
-- [Proposal: Requesting Specific Fields Resources](#proposal-requesting-specific-fields-resources)
+- [Requesting Specific Fields Resources (Proposal)](#requesting-specific-fields-resources-proposal)
   - [Sparse Fields](#sparse-fields)
   - [Hidden Fields](#hidden-fields)
   - [Proposal: Fields For Sub-Resources](#proposal-fields-for-sub-resources)
@@ -107,7 +107,7 @@ This is a living document; It will change over time as we learn more about our u
 * **Opinionatedness**: There is one clear way to do something.
 
 ### API Technologies
-* **HTTP:** All API requests must be made over HTTP.
+* **HTTP:** All API requests **MUST** be made over HTTP.
 * **JSON & YAML:** All API request and response bodies will be JSON or YAML objects (depending on the endpoint).
 
 ### API Design Inspirations
@@ -122,7 +122,7 @@ Here is an example request to retrieve apps:
 GET /v3/apps?names=dora,kailan&order_by=created_at&page=1&per_page=2
 ```
 
-> **Note:** To make the examples in this style guide more human-readable, the urls in this style guide to not encode query strings.  All requests and responses must contain correctly encoded characters. For more information see [Query Parameters](#query-parameters).
+> **Note:** To make the examples in this style guide more human-readable, the urls in this style guide to not encode query strings.  All requests and responses **MUST** contain correctly encoded characters. For more information see [Query Parameters](#query-parameters).
 
 Here is the respective response body:
 
@@ -148,7 +148,7 @@ Here is the respective response body:
       "name": "dora",
       "state": "STOPPED",
       "created_at": "2015-08-06T00:36:20Z",
-      "updated_at": null,
+      "updated_at": "2015-08-06T00:36:20Z",
       "links": {
         "self": {
           "href": "https://api.example.org/v3/apps/guid-00133700-abcd-1234-9000-3f70a011bc28"
@@ -183,7 +183,7 @@ Here is the respective response body:
       "name": "kailan",
       "state": "STOPPED",
       "created_at": "2015-08-07T00:40:52Z",
-      "updated_at": null,
+      "updated_at": "2015-08-07T00:40:52Z",
       "links": {
         "self": {
           "href": "https://api.example.org/v3/apps/guid-bd7369a8-deed-ff1a-2315-77410293a922"
@@ -219,24 +219,24 @@ Here is the respective response body:
 
 ## Requests
 
-### URL structure
+### URL Structure
 
-All endpoints must be prefixed with `/v3/`.
+All endpoints **MUST** be prefixed with `/v3/`.
 Pattern: `/v3/...`  
 
 Collections of resources are referenced by their resource name (plural)  
-Pattern: `/v3/:resource name`  
+Pattern: `/v3/:resource_name`  
 Example: `/v3/apps`  
 
-Individual resources are referenced by their resource name (plural) followed by the guid  
-Pattern: `/v3/:resource name/:guid`  
+Individual resources are referenced by their resource name (plural) followed by the resource's guid  
+Pattern: `/v3/:resource_name/:guid`  
 Example:  `/v3/apps/25fe21b8-8de2-40d0-93b0-c819101d1a11`  
 
 ### GET
-Retrieve a single resource or a list of resources. **Must** be idempotent.
+Retrieve a single resource or a list of resources. **MUST** be idempotent.
 
-* GET requests **may** include query parameters
-* GET requests **must NOT** include a request body
+* GET requests **MAY** include query parameters
+* GET requests **MUST NOT** include a request body
 
 #### Examples
 **Show individual resource:**
@@ -264,16 +264,17 @@ GET /v3/apps/
 ### POST
 Used to create a resource or trigger an [action](#actions).
 
-* POST requests **must NOT** include query parameters
-* POST requests **may** include a request body
+* POST requests **MUST NOT** include query parameters
+* POST requests **MAY** include a request body
 
 #### Examples
 
 **Create a resource:**
 
-```json
+```
 POST /v3/apps/
-
+```
+```json
 {
   "name": "cool_app",
   "space_guid": "123guid"
@@ -282,9 +283,10 @@ POST /v3/apps/
 
 **Trigger an action:**
 
-```json
+```
 POST /v3/processes/:guid/scale
-
+```
+```json
 {
   "instances": 100,
   "memory_in_mb": 2048
@@ -306,16 +308,17 @@ Not used. To update a resource, use [PATCH](#patch)
 ### PATCH
 Used to update a portion of a resource.
 
-* PATCH requests **must NOT** include query parameters
-* PATCH requests **may** include a request body
+* PATCH requests **MUST NOT** include query parameters
+* PATCH requests **MAY** include a request body
 * PATCH operations **MUST** apply all requested updates or none.
 
 #### Examples
 Partially update a resource:
 
-```json
+```
 PATCH /v3/apps/:guid
-
+```
+```json
 {
   "name": "new_app_name"
 }
@@ -333,10 +336,10 @@ PATCH /v3/apps/:guid
 ### DELETE
 Used to delete a resource.
 
-* DELETE requests **may** include query parameters
-* DELETE requests **must NOT** include a request body †
-* Deleting a resource **may** also recursively delete associated resources.
-* Deleting a resource **may** occur syncronously or [asyncronously](#asynchronicity)
+* DELETE requests **MAY** include query parameters
+* DELETE requests **MUST NOT** include a request body †
+* Deleting a resource **MAY** also recursively delete associated resources.
+* Deleting a resource **MAY** occur syncronously or [asyncronously](#asynchronicity)
 
 > † Some load balancers remove bodies from DELETE requests. Since the API could be running behind any load balancer, we cannot depend on DELETE requests with bodies.
 
@@ -366,7 +369,7 @@ DELETE /v3/apps/:guid
 |200 OK|This status **MUST** be returned for synchronous requests that complete successfully and have a response body. This **MUST** only be used if there is not a more appropriate 2XX response code. |GET, PATCH, POST (for actions)|
 |201 Created|This status **MUST** be returned for synchronous requests that result in the creation of a new resource.|POST|
 |202 Accepted|This status **MUST** be returned for requests that have been successfully accepted and will be asynchronously completed at a later time. See more in the [async](#asynchronicity) section. |POST, PATCH, DELETE|
-|204 No Content|This status **MUST** be returned for synchronous requests that complete successfully and have no response body.|DELETE
+|204 No Content|This status **MUST** be returned for synchronous requests that complete successfully and have no response body. |DELETE |
 
 
 ### Redirection
@@ -390,18 +393,18 @@ DELETE /v3/apps/:guid
 
 If a resource does not exist OR a user does not have read permissions for it, then 404 **MUST** be returned for PATCH/DELETE requests. This is to prevent leaking information about what resources exist by returning 403s for resources that exist, but a user does not have read permissions for. Explicitly:
 
-||**no permissions**|**read-only permissions**|**read/write permissions**|
+||**No Permissions**|**Read-Only Permissions**|**Read/Write Permissions**|
 |-|-|-|-|
-|**resource exists**| 404 | 403 | 2XX |
-|**resource does not exist**| 404 | 404 | 404 |
+|**Resource Exists**| 404 | 403 | 2XX |
+|**Resource Does Not Exist**| 404 | 404 | 404 |
 
 ### Server Errors
 
-|Status Code|Description|
-|---|---|
-|500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs.
-|502 Bad Gateway|This status **MUST** be returned when an external service failure causes a request to fail. Example: Being unable to reach requested service broker.
-|503 Service Unavailable|This status **MUST** be returned when an internal service failure causes a request to fail. Example: Being unable to reach Diego or CredHub.
+| Status Code | Description |
+| ----------- | ----------- |
+|500 Internal Server Error|This status **MUST** be returned when an unexpected error occurs. |
+|502 Bad Gateway|This status **MUST** be returned when an external service failure causes a request to fail. Example: Being unable to reach requested service broker. |
+|503 Service Unavailable|This status **MUST** be returned when an internal service failure causes a request to fail. Example: Being unable to reach Diego or CredHub. |
 
 ## Resources
 
@@ -413,7 +416,7 @@ A resource **MUST** contain the following fields:
 * `created_at`: an ISO8601 compatible date and time that the resource was created
 * `updated_at`: an ISO8601 compatible date and time that the resource was last updated
 
-A resource **may** contain additional fields which are the attributes describing the resource.
+A resource **MAY** contain additional fields which are the attributes describing the resource.
 
 A resource **MUST** contain a `links` field containing a [links](#links) object, which is used to provide URLs to associated resources, relationships, and actions for the resource.
 
@@ -440,7 +443,7 @@ A resource **MUST** include a `self` link object in the `links` field.
 
 ## Pseudo-Resources
 
-Pseudo-Resources are API endpoints that are nested under other resources and do not have a unique identifier. Their lifecycles are tied directly to their parent resource. They may, however, require different permissions to operate on than their parent resource.
+Pseudo-Resources are API endpoints that are nested under other resources and do not have a unique identifier. Their lifecycles are tied directly to their parent resource. These endpoints **MAY** require different permissions to operate on than their parent resource.
 
 ### Example
 
@@ -455,7 +458,7 @@ Actions **MUST** use use POST as their HTTP verb.
 
 Actions **MUST** be nested under the `/actions` path for a resource
 
-Actions **may** accept a request body.
+Actions **MAY** accept a request body.
 
 Actions **MUST** be listed in the `links` for the related resource.
 
@@ -492,7 +495,7 @@ Links provide URLs to associated resources, relationships, and actions for a res
 Each member of a links object is a "link".  
 A link **MUST** be a JSON object.
 A link **MUST** contain a `href` field, which is a string containing the link's relative URL.
-A link **may** contain a `method` field, containing the HTTP verb that must be used to follow the URL.  If the `method` field is not included then the link **MUST** be available using GET.
+A link **MAY** contain a `method` field, containing the HTTP verb used for the URL.  If the `method` field is not included then the link **MUST** be available using GET.
 
 ### Example
 
@@ -527,6 +530,18 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
 
 ```json
 {
+  "pagination": {
+    "total_results": 2,
+    "total_pages": 1,
+    "first": {
+      "href": "http://api.example.com/v3/apps?page=1&per_page=10"
+    },
+    "last": {
+      "href": "http://api.example.com/v3/apps?page=1&per_page=10"
+    },
+    "next": null,
+    "previous": null
+  },
   "resources": [
     {
       "guid": "a-b-c",
@@ -550,25 +565,13 @@ A collection **MUST** contain a `pagination` field containing a [pagination](#pa
         }
       }
     }
-  ],
-  "pagination": {
-    "total_results": 2,
-    "total_pages": 1,
-    "first": {
-      "href": "http://api.example.com/v3/apps?page=1&per_page=10"
-    },
-    "last": {
-      "href": "http://api.example.com/v3/apps?page=1&per_page=10"
-    },
-    "next": null,
-    "previous": null
-  }
+  ]
 }
 ```
 
 ## Pagination
 
-Pagination **may** be used by [Collections](#collections) to limit the number of resources returned at a time.  Pagination is requested by a client through the use of query parameters. Pagination is represented as a JSON object.
+Pagination **MAY** be used by [Collections](#collections) to limit the number of resources returned at a time.  Pagination is requested by a client through the use of query parameters. Pagination is represented as a JSON object.
 
 Pagination **MUST** include a `total_results` field with an integer value of the total number of records in the collection.
 
@@ -581,7 +584,7 @@ Pagination **MUST** include the following fields for pagination links:
 * `previous`: URL for the previous page of resources
 * `next`: URL for the next page of resources
 
-Pagination links **may** be `null`.  For example, if the page currently being displayed is the first page, then  `previous` link will be null.
+Pagination links **MAY** be `null`.  For example, if the page currently being displayed is the first page, then  `previous` link will be null.
 
 When pagination links contain a URL, they **MUST** be a JSON object with a field named `href` containing a string with the URL for the next page.
 
@@ -589,30 +592,32 @@ The following query parameters **MUST** be supported for pagination:
 
 * `page`: the page number of resources to return (default: 1)
 * `per_page`: the number of resources to return in a paginated collection request (default: 50)
-* `order_by`: a field on the resource to order the collection by; each collection may have a different subset of fields that can be sorted by 
+* `order_by`: a field on the resource to order the collection by; each collection will have a different subset of fields that can be sorted by 
 
 When collections are ordered by a subset of fields, each field **MAY** be prepended with "-" to indicate descending order direction. If the field is not prepended, the ordering will default to ascending.
 
 If there are additional pagination query parameters, the parameters **MUST** have names that conform to the acceptable [query parameter](#query-parameters) names.
 
-Pagination URLs **MUST** include _all_ query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be sorted by a certain field, then the pagination links must include the proper query parameter to maintain the requested sort order.
+Pagination URLs **MUST** include _all_ query parameters required to maintain consistency with the original pagination request.  For example, if the client requested for the collection to be sorted by a certain field, then the pagination links **MUST** include the proper query parameter to maintain the requested sort order.
 
 ### Example
 
 ```json
-"pagination:" {
-  "total_results": 20,
-  "total_pages": 2,
-  "first": {
-    "href": "http://api.example.com/v3/apps?order_by=-created_at&page=1&per_page=10"
-  },
-  "last": {
-    "href": "http://api.example.com/v3/apps?order_by=-created_at&page=2&per_page=10"
-  },
-  "next": {
-    "href": "http://api.example.com/v3/apps?order_by=-created_at&page=2&per_page=10"
-  },
-  "previous": null
+{
+  "pagination": {
+    "total_results": 20,
+    "total_pages": 2,
+    "first": {
+      "href": "http://api.example.com/v3/apps?order_by=-created_at&page=1&per_page=10"
+    },
+    "last": {
+      "href": "http://api.example.com/v3/apps?order_by=-created_at&page=2&per_page=10"
+    },
+    "next": {
+      "href": "http://api.example.com/v3/apps?order_by=-created_at&page=2&per_page=10"
+    },
+    "previous": null
+  }
 }
 ```
 
@@ -693,6 +698,8 @@ This will return all routes with path `"pepper"`, `""` OR `"tabi"`.
 
 ### Filtering on Inequalities (Proposal)
 
+> Note: This is a proposal and is not currently implemented on any API endpoints
+
 Resources **MAY** support filtering on inequalities for some fields.
 
 **Strictly Less Than**:
@@ -716,6 +723,8 @@ This will return all processes with greater than 5 instances.
 This will return all processes with greater than 5 instances or exactly 5 instances.
 
 ### Filtering on Non-Equality (Proposal)
+
+> Note: This is a proposal and is not currently implemented on any API endpoints
 
 Resources **MAY** support filtering on inequalities for some fields.
 
@@ -770,11 +779,11 @@ Each error message **MUST**:
 
 Relationships represent named associations between resources. Relationships can be used to create, read, update, and delete associations through the relationship sub resource.
 
-A resource **may** have a relationship with exactly one instance of a resource (a _to-one_ relationship).
+A resource **MAY** have a relationship with exactly one instance of a resource (a _to-one_ relationship).
 
-A resource **may** have a relationship with multiple instances of a resource (a _to-many_ relationship).
+A resource **MAY** have a relationship with multiple instances of a resource (a _to-many_ relationship).
 
-Resources **may** implement none, some, or all of the relationship operation listed below for each of its associations.
+Resources **MAY** implement none, some, or all of the relationship operation listed below for each of its associations.
 
 ### Relationships at Resource Creation
 
@@ -924,7 +933,7 @@ PATCH /v3/apps/:app_guid/relationships/routes
 
 ## Nested Resources
 
-Nested resources *may* be accessible through their parent resource.
+Nested resources **MAY** be accessible through their parent resource.
 ```
 GET /v3/apps/:app_guid/droplets
 ```
@@ -937,7 +946,7 @@ GET /v3/droplets?app_guids=:app_guid
 
 This is a mechanism for including multiple related resources in a single response.
 
-Resources and collections **may** accept an `include` query parameter with a list of resource paths.
+Resources and collections **MAY** accept an `include` query parameter with a list of resource paths.
 
 Each resource path **MUST** be a series of period-separated relationship names. For example: `app.space.organization`
 
@@ -1001,11 +1010,11 @@ GET /v3/apps?include=space,space.organization
   }
 }
 ```
-### Proposal: Pagination of Included Resources
+### Pagination of Included Resources (Proposal)
 
 > Note: This is a proposal and is not currently implemented on any API endpoints
 
-When including to-many relationships, there may be more related resources than can be returned in a single response. In that case, only the first page of the included resources will be returned.
+When including to-many relationships, there can be more related resources than can be returned in a single response. In that case, only the first page of the included resources will be returned.
 
 ```
 GET /v3/spaces/:guid?include=apps
@@ -1092,7 +1101,7 @@ The pagination filters for included resources are included in the top-level pagi
 
 ## GUID Hiding
 
-Resources that are visible to any given user may have relationships/links with other resources that that user does not have read access for.
+Resources that are visible to any given user can have relationships/links with other resources that that user does not have read access for.
 
 In these cases, the following rules apply:
 1. If the resource is scoped to a particular organization/space and is shared to a different organization/space, then the owning organization/space guid will be visible.
@@ -1114,7 +1123,7 @@ Keep in mind that only the user/client that issued the request triggering the as
 ### Triggering Async Actions
 
 The CC will return a 202 with a `Location` header pointing to the async job.
-```json
+```
 DELETE /v3/resource/:guid
 202 Accepted
 Location: /v3/jobs/123
@@ -1123,10 +1132,11 @@ Location: /v3/jobs/123
 
 GET requests made to the job resource **MUST** return 200 with information about the status of the job.
 
-```json
+```
 GET /v3/jobs/123
 200 OK
-
+```
+```json
 {
   "state": "PROCESSING",
   "operation": "service_instance.create",
@@ -1140,12 +1150,13 @@ GET /v3/jobs/123
 }
 ```
 
-The job resource **may* include links to resources affected by the operation.
+The job resource **MAY** include links to resources affected by the operation.
 
-```json
+```
 GET /v3/jobs/123
 200 OK
-
+```
+```json
 {
   "state": "COMPLETE",
   "operation": "splines.reticulate",
@@ -1225,15 +1236,15 @@ GET /v3/jobs/123
 
 When there are no warnings, `warnings` field will have a value of an empty array.
 
-##  Proposal: Requesting Specific Fields Resources
+##  Requesting Specific Fields Resources (Proposal)
 
 > Note: This is a proposal and is not currently implemented on any API endpoints
 
 ### Sparse Fields
 
-Clients may only wish to see a specific set of fields from the API. 
+Clients could wish to see only a specific set of fields from the API. 
 
-The `fields` query parameter **may** be provided. 
+The `fields` query parameter **MAY** be provided. 
 
 The `fields`  parameter **MUST** be a comma-delimited list of field names.
 
@@ -1241,7 +1252,8 @@ If the `fields`  parameter is present, the API **MUST** return only the specifie
 
 ```json
 GET /apps/:guid?fields=guid,name
-
+```
+```json
 {
   "guid": "some-guid",
   "name": "Zach"
@@ -1250,27 +1262,29 @@ GET /apps/:guid?fields=guid,name
 
 ### Hidden Fields
 
-The API may not return some fields by default. For example, a field might be computationally expensive, or require a certain permission to return.
+Certain resources **MAY** not return some fields by default. For example, a field might be computationally expensive, or require a certain permission to return.
 
-The `fields` query parameter **may** be provided. 
+The `fields` query parameter **MAY** be provided. 
 
 The `fields`  parameter **MUST** be a comma-delimited list of field names.
 
 If the `fields`  parameter is present, the API **MUST** return the the specified fields in addition to the default set of fields.
 
 Without Fields Parameter:
-```json
+```
 GET /apps/:guid
-
+```
+```json
 {
   "guid": "some-guid"
 }
 ```
 
 With Fields Parameter:
-```json
+```
 GET /apps/:guid?fields=expensive_field
-
+```
+```json
 {
   "guid": "some-guid",
   "expensive_field": "$$$$"
@@ -1280,9 +1294,10 @@ GET /apps/:guid?fields=expensive_field
 ### Proposal: Fields For Sub-Resources
 
 If we want to be able to filter the fields of included resources, we could do something like:
-```json
+```
 GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
-
+```
+```json
 {
   "guid": "some-guid",
   "name": "my-app",
@@ -1299,6 +1314,7 @@ GET /v3/apps/:guid?fields=guid,name&fields[droplet]=guid
 Currently, users can only delete resources one-by-one or as part of a cascading delete. This would enable users to delete multiple matching resources with a single request.
 
 **Example:**
+
 ```json
 DELETE /v3/spaces/:guid/routes
 
