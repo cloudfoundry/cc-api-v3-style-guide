@@ -1,5 +1,5 @@
 
-
+## *Archived: This information has been relocated to the [cloud_controller_ng repo](https://github.com/cloudfoundry/cloud_controller_ng/blob/main/docs/v3_style_guide.md)*
 
 # Cloud Controller API v3 Style Guide
 
